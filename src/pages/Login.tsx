@@ -8,12 +8,13 @@ import {
 import { useValidation } from '../hooks/useValidation';
 import { API } from '../api/API';
 import { AxisContext } from '../store/AxisContext';
+import routes from '../constants/routes';
 
 export const Login: React.FC = () => {
-  const usersApi = API.users;
-  const { setIsLoggedIn, setUser } = useContext(AxisContext);
+  const { setIsLoggedIn, setUser, requestOptions } = useContext(AxisContext);
   const { validate, getErrorMessage } = useValidation();
   const screenSize = useScreenSize();
+  const usersApi = API.users(requestOptions);
 
   const [errorMessages, setErrorMessages] =
     useState<Partial<SignupFormFields>>();
@@ -62,7 +63,7 @@ export const Login: React.FC = () => {
   };
 
   const setLogin = ({ user, token }: { user: any; token: string }) => {
-    setUser({ user, token });
+    setUser(user);
     setIsLoggedIn(true);
     localStorage.setItem('token', token);
   };
@@ -102,7 +103,7 @@ export const Login: React.FC = () => {
             <img
               className={'rounded-xl'}
               style={{ width: '180px' }}
-              src={'./AxisIR.png'}
+              src={routes.assets.logo}
               alt={'AxisIR'}
             />
           </div>
@@ -128,7 +129,7 @@ export const Login: React.FC = () => {
               type='submit'
               className='w-full flex justify-center py-2 px-4 border border-transparent
               rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700
-              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 hover:bg-main-darkest hover:text-main-lightest'
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 hover:bg-main-darkest hover:text-main-light-green'
             >
               {isLogin ? 'Login' : 'Sign Up'}
             </button>
@@ -147,7 +148,7 @@ export const Login: React.FC = () => {
         <div className='w-1/2'>
           <img
             className='w-full h-full'
-            src={'./imgs/signup.png'}
+            src={routes.assets.signup}
             alt={'signup'}
           />
         </div>

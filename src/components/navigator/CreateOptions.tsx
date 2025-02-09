@@ -1,59 +1,44 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { ReactComponent as Plus } from '../../svg/plus.svg';
+import { Button } from '../ui/Button';
+import { createOptions } from '../../constants/createOptions';
+import { Link } from 'react-router-dom';
+import { useIsClickOutside } from '../../hooks/useIsClickOutside';
 
 export const CreateOptions = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
+
+  const { isOpen, setIsOpen } = useIsClickOutside(ref);
+
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target as Node)
-    ) {
-      setIsOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
   return (
-    <div className='relative'>
-      <button
-        type={'button'}
+    <div className='relative' ref={ref}>
+      <Button
+        theme={'primary'}
         onClick={toggleDropdown}
-        className='text-main-lightest flex bg-main-mid p-3 ml-2 rounded-xl mb-2'
-      >
-        <p>Add New</p>
-        <Plus className={'ml-2 w-4 h-6'} />
-      </button>
-
+        text={'Add New'}
+        icon={() => <Plus className='ml-2 w-4 h-6' />}
+      />
       {isOpen && (
-        <div
-          ref={dropdownRef}
-          className='origin-top-right absolute left-32 top-0 min-w-40 rounded-md shadow-xl bg-main-white outline-none'
-        >
+        <div className='origin-top-right absolute left-32 top-0 min-w-40 rounded-md shadow-xl bg-main-white outline-none overflow-hidden'>
           <div
-            className='flex flex-col justify-start items-start py-2 my-2'
+            className='flex flex-col justify-start items-start'
             role='menu'
             aria-orientation='vertical'
             aria-labelledby='options-menu'
           >
-            {['Ticket', 'Asset', 'User'].map((option, i) => (
-              <button
-                className={`py-2 px-6 hover:bg-main-dark-50 w-full text-left ${i === 0 ? 'mt-0' : 'mt-2'}`}
-                type={'button'}
-                key={option}
+            {createOptions.map((option) => (
+              <Link
+                to={option.uri}
+                key={option.name}
+                className={`py-4 px-6 flex hover:bg-main-dark-50 text-left w-full`}
+                onClick={() => setIsOpen(false)}
               >
-                {option}
-              </button>
+                {option.name}
+              </Link>
             ))}
           </div>
         </div>

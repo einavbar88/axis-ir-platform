@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { SelectAccount } from './SelectAccount';
 import { AccountContext } from '../../store/AccountContext';
+import routes from '../../constants/routes';
+import { UserOptions } from './UserOptions';
 
 export const TopBar = () => {
   const { selectedAccount } = useContext(AccountContext);
@@ -13,29 +15,21 @@ export const TopBar = () => {
       }
     >
       <div className='flex pl-8 py-2 w-60'>
-        <Link to={'/'}>
+        <Link to={routes.platform.home}>
           <img
             className={'rounded-3xl'}
             style={{ width: '100px' }}
-            src={'./AxisIR.png'}
+            src={routes.assets.logo}
             alt={'AxisIR'}
           />
         </Link>
       </div>
       <div className={'flex align-middle justify-between w-full'}>
         <div />
-        <div className={'content-center'}>
-          <h3
-            className={'font-extrabold text-main-darkest'}
-            style={{
-              textShadow:
-                '-0.855px -0.855px 0 #d1e3ff, 0.855px -0.855px 0 #d1e3ff, -0.855px 0.855px 0 #d1e3ff, 0.855px 0.855px 0 #d1e3ff',
-            }}
-          >
-            {selectedAccount.value ? selectedAccount.label : ''}
-          </h3>
-        </div>
         <SelectAccount />
+        <div className='flex items-center pr-2'>
+          <UserOptions />
+        </div>
       </div>
     </div>
   );

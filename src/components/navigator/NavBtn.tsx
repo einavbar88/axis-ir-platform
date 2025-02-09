@@ -11,7 +11,7 @@ export const NavBtn: React.FC<Props> = ({ to, text }) => {
     <li>
       <Link
         to={to}
-        className='flex items-center gap-4 p-3 rounded-md hover:bg-main-dark-50 hover:text-main-lightest'
+        className='flex items-center gap-4 p-3 rounded-md hover:bg-main-dark-50 hover:text-main-light-green'
       >
         <span>{text}</span>
       </Link>

@@ -3,6 +3,7 @@ import React, {
   useContext,
   useState,
   type ReactNode,
+  useEffect,
 } from 'react';
 import { AxisContext } from './AxisContext';
 
@@ -13,7 +14,7 @@ export type Option = {
 
 interface AccountContextType {
   setSelectedAccount: (value: Option) => void;
-  selectedAccount: Option;
+  selectedAccount?: Option;
   accounts: Option[];
 }
 
@@ -30,12 +31,21 @@ export const AccountProvider: React.FC<AccountProviderProps> = ({
 }) => {
   const { accounts: dbAccounts } = useContext(AxisContext);
 
-  const accounts = dbAccounts.map((account) => ({
-    label: account.name,
-    value: account.id,
-  }));
+  const [selectedAccount, setSelectedAccount] = useState<Option>();
+  const [accounts, setAccounts] = useState<Option[]>([]);
 
-  const [selectedAccount, setSelectedAccount] = useState<Option>(accounts[0]);
+  useEffect(() => {
+    const accounts = dbAccounts.map(
+      (account: { name: string; companyId: string }) => ({
+        label: account.name,
+        value: account.companyId,
+      }),
+    );
+    setAccounts(accounts);
+    if (!selectedAccount) {
+      setSelectedAccount(accounts[0]);
+    }
+  }, [dbAccounts]);
 
   return (
     <AccountContext.Provider

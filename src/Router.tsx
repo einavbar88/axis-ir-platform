@@ -6,20 +6,56 @@ import { TopBar } from './components/top-bar/TopBar';
 import { Navigation } from './components/navigator/Navigation';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
+import { Loader } from './components/ui/Loader';
+import { CreateAccount } from './pages/account/CreateAccount';
+import routes from './constants/routes';
+import { ManageAccount } from './pages/account/ManageAccount';
 
 export const Router: React.FC = () => {
-  const { isLoggedIn } = useContext(AxisContext);
+  const { isLoggedIn, isPageLoading } = useContext(AxisContext);
+
+  if (isPageLoading) {
+    return (
+      <div className='h-screen bg-main-darkest flex items-center justify-center'>
+        <Loader size={200} />
+      </div>
+    );
+  }
+
   return isLoggedIn ? (
     <>
       <AccountProvider>
         <TopBar />
+        <Navigation />
+        <div className={'ml-52 mt-20 p-2 font-poppins'}>
+          <Routes>
+            <Route path={routes.platform.home} element={<Home />} />
+            <Route
+              path={routes.platform.createAccount}
+              element={<CreateAccount />}
+            />
+            <Route
+              path={routes.platform.manageAccount}
+              element={<ManageAccount />}
+            />
+            <Route
+              path={routes.platform.notFound}
+              element={
+                <div className='w-full h-full flex flex-col justify-center'>
+                  <h1 className='text-center text-main-darkest font-bold text-4xl'>
+                    Page not found
+                  </h1>
+                  <img
+                    style={{ maxHeight: 'calc(100vh - 200px)' }}
+                    src={routes.assets.notFound}
+                    alt={'Page not found'}
+                  />
+                </div>
+              }
+            />
+          </Routes>
+        </div>
       </AccountProvider>
-      <Navigation />
-      <div className={'ml-52 mt-20 p-2 font-poppins'}>
-        <Routes>
-          <Route path='/' element={<Home />} />
-        </Routes>
-      </div>
     </>
   ) : (
     <Login />
