@@ -14,7 +14,7 @@ export const SelectAccount: React.FC = () => {
   return selectedAccount ? (
     <div
       ref={selectAccountRef}
-      className={'flex align-middle pr-2'}
+      className={'flex align-middle pr-2 relative'}
       onClick={() => setIsOpen(!isOpen)}
     >
       <div className={'flex items-center relative'}>
@@ -40,7 +40,7 @@ export const SelectAccount: React.FC = () => {
       {isOpen && (
         <div
           className={
-            'absolute z-20 top-14 bg-main-white bg-white shadow-md rounded-lg w-44 overflow-hidden'
+            'absolute z-20 top-14 -left-20 bg-main-white bg-white shadow-md rounded-lg w-52 overflow-hidden'
           }
         >
           <div className='p-4 font-bold border-b border-dashed'>
@@ -50,8 +50,9 @@ export const SelectAccount: React.FC = () => {
             <div
               key={account.value}
               className='px-4 py-4 hover:bg-main-dark-50 cursor-pointer'
+              onClick={() => setSelectedAccount(account)}
             >
-              <div className=''>{account.label}</div>
+              <div>{account.label}</div>
             </div>
           ))}
           <div className='p-4 font-semibold border-t border-dashed cursor-pointer hover:bg-main-dark-50'>

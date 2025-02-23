@@ -50,8 +50,7 @@
           "fix": "safe"
         },
         "useExhaustiveDependencies": {
-          "level": "off",
-          "options": {}
+          "level": "off"
         },
         "noInvalidUseBeforeDeclaration": {
           "level": "off"
@@ -72,7 +71,6 @@
         }
       },
       "a11y": {
-        "noLabelWithoutControl": "off",
         "useValidAnchor": {
           "level": "off"
         },
@@ -83,8 +81,7 @@
           "level": "off"
         },
         "noBlankTarget": {
-          "level": "off",
-          "options": {}
+          "level": "off"
         },
         "useMediaCaption": {
           "level": "off"
@@ -103,8 +100,7 @@
       },
       "suspicious": {
         "noDoubleEquals": {
-          "level": "off",
-          "options": {}
+          "level": "off"
         },
         "noAssignInExpressions": {
           "level": "off"

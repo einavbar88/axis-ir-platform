@@ -10,6 +10,7 @@ import { Loader } from './components/ui/Loader';
 import { CreateAccount } from './pages/account/CreateAccount';
 import routes from './constants/routes';
 import { ManageAccount } from './pages/account/ManageAccount';
+import { Accounts } from './pages/account/Accounts';
 
 export const Router: React.FC = () => {
   const { isLoggedIn, isPageLoading } = useContext(AxisContext);
@@ -30,6 +31,7 @@ export const Router: React.FC = () => {
         <div className={'ml-52 mt-20 p-2 font-poppins'}>
           <Routes>
             <Route path={routes.platform.home} element={<Home />} />
+            <Route path={routes.platform.accounts} element={<Accounts />} />
             <Route
               path={routes.platform.createAccount}
               element={<CreateAccount />}

@@ -6,6 +6,8 @@ const accounts = (config: AxiosRequestConfig) => ({
   create: async (createForm: CreateAccountForm) =>
     axios.post(routes.api.accounts.create, { ...createForm }, config),
   getByUserId: async () => axios.get(routes.api.accounts.getByUserId, config),
+  getById: async (id: number) =>
+    axios.get(`${routes.api.accounts.getById}/${id}`, config),
 });
 
 export default accounts;

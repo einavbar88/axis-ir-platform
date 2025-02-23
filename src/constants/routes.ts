@@ -1,8 +1,9 @@
 const platform = {
   home: '/',
   about: '/about',
+  accounts: '/accounts',
   createAccount: '/create-account',
-  manageAccount: '/manage-account/:id',
+  manageAccount: '/manage-account',
   login: '/login',
   register: '/register',
   profile: '/profile',
@@ -19,6 +20,7 @@ const server = {
   accounts: {
     create: 'accounts/create',
     getByUserId: 'accounts/getByUserId',
+    getById: 'accounts/getById',
   },
 };
 
@@ -29,7 +31,7 @@ const assets = {
   notFound: `${ASSETS_PATH}/imgs/404.svg`,
   createAccount: `${ASSETS_PATH}/imgs/createAccount.svg`,
   noAccount: `${ASSETS_PATH}/imgs/noAccount.svg`,
-  signup: `${ASSETS_PATH}/imgs/signup.svg`,
+  signup: `${ASSETS_PATH}/imgs/signup.png`,
   user: `${ASSETS_PATH}/imgs/user.svg`,
   manage: `${ASSETS_PATH}/imgs/manage.svg`,
   chevron: `${ASSETS_PATH}/icons/chevron.svg`,

@@ -13,7 +13,9 @@ const users = (config: AxiosRequestConfig) => {
     loginToken: async (token: string) =>
       axios.post(routes.api.users.tokenLogin, { token }, config),
 
-    logout: async () => axios.post(routes.api.users.logout, {}, config),
+    logout: async (token: string | null) => {
+      if (token) return axios.post(routes.api.users.logout, { token }, config);
+    },
   };
 };
 

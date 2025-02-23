@@ -1,13 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { SelectAccount } from './SelectAccount';
-import { AccountContext } from '../../store/AccountContext';
 import routes from '../../constants/routes';
 import { UserOptions } from './UserOptions';
 
 export const TopBar = () => {
-  const { selectedAccount } = useContext(AccountContext);
-
   return (
     <div
       className={

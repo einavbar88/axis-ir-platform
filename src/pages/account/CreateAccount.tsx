@@ -1,11 +1,12 @@
 import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { API } from '../../api/API';
 import { AxisContext } from '../../store/AxisContext';
 import routes from '../../constants/routes';
-import { useNavigate } from 'react-router-dom';
 import { AccountContext } from '../../store/AccountContext';
+import type { Account } from '../../store/types/Account.type';
 
 export interface CreateAccountForm {
   cin: string;
@@ -49,8 +50,7 @@ export const CreateAccount: React.FC = () => {
     API.accounts(requestOptions)
       .create(formValues)
       .then(({ data }) => {
-        const company: { companyId: number; name: string } =
-          data.responseObject;
+        const company: Account = data.responseObject;
         setAccounts([...accounts, company]);
         setSelectedAccount({
           value: `${company.companyId}`,

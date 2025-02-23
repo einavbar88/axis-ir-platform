@@ -6,12 +6,13 @@ import React, {
 } from 'react';
 import { API } from '../api/API';
 import type { AxiosRequestConfig } from 'axios';
+import type { Account } from './types/Account.type';
 
 const BASE_URL = 'http://localhost:8080/';
 
 interface AxisContextType {
-  accounts: any[];
-  setAccounts: (accounts: any[]) => void;
+  accounts: Account[];
+  setAccounts: (accounts: Account[]) => void;
   isLoggedIn: boolean;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
   user: User['user'] | null;
@@ -19,6 +20,7 @@ interface AxisContextType {
   isPageLoading: boolean;
   setIsPageLoading: (isPageLoading: boolean) => void;
   requestOptions: AxiosRequestConfig;
+  logout: () => void;
 }
 
 export const AxisContext = createContext<AxisContextType>(
@@ -35,7 +37,7 @@ type User = {
 };
 
 export const AxisProvider: React.FC<AxisProviderProps> = ({ children }) => {
-  const [accounts, setAccounts] = useState<any[]>([]);
+  const [accounts, setAccounts] = useState<Account[]>([]);
   const [user, setUser] = useState<User['user'] | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(true);
@@ -45,6 +47,13 @@ export const AxisProvider: React.FC<AxisProviderProps> = ({ children }) => {
       'Content-Type': 'application/json',
     },
   });
+
+  const logout = async () => {
+    setIsLoggedIn(false);
+    setUser(null);
+    await API.users(requestOptions).logout(localStorage.getItem('token'));
+    localStorage.removeItem('token');
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -96,6 +105,7 @@ export const AxisProvider: React.FC<AxisProviderProps> = ({ children }) => {
         isPageLoading,
         setIsPageLoading,
         requestOptions,
+        logout,
       }}
     >
       {children}

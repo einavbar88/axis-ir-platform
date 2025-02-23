@@ -1,4 +1,5 @@
 import React, { type ReactElement } from 'react';
+import {Link} from "react-router-dom";
 
 type Props = {
   onClick?: () => void;
@@ -7,6 +8,7 @@ type Props = {
   theme?: 'primary' | 'secondary';
   icon?: () => ReactElement;
   type?: 'button' | 'submit';
+  linkTo?: string;
 };
 
 export const Button: React.FC<Props> = ({
@@ -16,6 +18,7 @@ export const Button: React.FC<Props> = ({
   icon,
   theme,
   type = 'button',
+    linkTo,
 }) => {
   const getThemeStyles = () => {
     switch (theme) {
@@ -27,6 +30,15 @@ export const Button: React.FC<Props> = ({
         return '';
     }
   };
+
+  if(linkTo) {
+    return (
+      <Link to={linkTo} className={`${getThemeStyles()} ${buttonClasses}`}>
+        <p>{text}</p>
+        {icon ? icon() : null}
+      </Link>
+    );
+  }
 
   return (
     <button
