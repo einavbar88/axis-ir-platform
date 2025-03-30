@@ -1,5 +1,6 @@
 import { NavBtn } from './NavBtn';
 import { CreateOptions } from './CreateOptions';
+import routes from '../../constants/routes';
 
 export const buttonsConfig = [
   {
@@ -7,8 +8,8 @@ export const buttonsConfig = [
     text: 'Dashboards',
   },
   {
-    to: '/about',
-    text: 'About',
+    to: routes.platform.assets,
+    text: 'Assets',
   },
 ];
 

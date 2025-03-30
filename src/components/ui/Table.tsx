@@ -16,7 +16,7 @@ export const DataTable: React.FC<Props> = ({
   rows,
   columns,
   paginationModel,
-  onClickRow = (row: any)=> {},
+  onClickRow = (row: any) => {},
   disableColumnSelector,
   disableColumnMenu,
   disableColumnFilter,
@@ -24,6 +24,7 @@ export const DataTable: React.FC<Props> = ({
   return (
     <Paper sx={{ maxHeight: 400, width: '100%' }}>
       <DataGrid
+        getRowId={() => Math.random().toString()}
         rows={rows}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}

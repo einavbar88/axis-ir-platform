@@ -26,7 +26,7 @@ export const Accounts: React.FC = () => {
   const onSelectRow = (data: any) => {
     const { row, id } = data;
     setSelectedAccount({ value: id, label: row.name });
-    navigate(routes.platform.manageAccount);
+    navigate(routes.platform.manageAccount.replace(':id', id));
   };
 
   useEffect(() => {

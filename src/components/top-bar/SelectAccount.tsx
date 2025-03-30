@@ -1,13 +1,13 @@
 import React, { useContext, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { AccountContext, type Option } from '../../store/AccountContext';
 import routes from '../../constants/routes';
 import { useIsClickOutside } from '../../hooks/useIsClickOutside';
-import { Link } from 'react-router-dom';
 
 export const SelectAccount: React.FC = () => {
   const { accounts, selectedAccount, setSelectedAccount } =
     useContext(AccountContext);
-
+  const navigate = useNavigate();
   const selectAccountRef = useRef<HTMLDivElement>(null);
   const { isOpen, setIsOpen } = useIsClickOutside(selectAccountRef);
 
@@ -50,7 +50,12 @@ export const SelectAccount: React.FC = () => {
             <div
               key={account.value}
               className='px-4 py-4 hover:bg-main-dark-50 cursor-pointer'
-              onClick={() => setSelectedAccount(account)}
+              onClick={() => {
+                setSelectedAccount(account);
+                navigate(
+                  routes.platform.manageAccount.replace(':id', account.value),
+                );
+              }}
             >
               <div>{account.label}</div>
             </div>

@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 
 type Props = {
   name: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: any) => void;
   type?: React.HTMLInputTypeAttribute;
   isRequired?: boolean;
   inputClasses?: string;
   label?: string;
   labelClasses?: string;
   errorMessage?: string;
+  defaultValue?: string | number;
 };
 
 export const Input: React.FC<Props> = ({
@@ -20,13 +21,19 @@ export const Input: React.FC<Props> = ({
   label,
   name,
   errorMessage,
+  defaultValue = '',
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [inputType, setInputType] = useState(type);
+  const [value, setValue] = useState<string>();
 
   useEffect(() => {
     setInputType(showPassword ? 'text' : type);
   }, [showPassword, type]);
+
+  useEffect(() => {
+    onChange({ target: { value, name } });
+  }, [value]);
 
   return (
     <div>
@@ -41,7 +48,8 @@ export const Input: React.FC<Props> = ({
         <input
           autoComplete={'off'}
           type={inputType}
-          onChange={onChange}
+          onChange={(e) => setValue(e.target.value)}
+          value={value ?? defaultValue}
           required={isRequired}
           name={name}
           className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 

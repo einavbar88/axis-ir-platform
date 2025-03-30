@@ -1,14 +1,16 @@
+import routes from './routes';
+
 export const createOptions = [
   {
     name: 'Incident',
-    uri: 'incidents/create',
+    uri: routes.platform.createIncident,
   },
   {
     name: 'Asset',
-    uri: 'assets/create',
+    uri: routes.platform.createAsset,
   },
   {
     name: 'User',
-    uri: 'users/create',
+    uri: routes.platform.inviteUser,
   },
 ];
