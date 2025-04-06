@@ -1,4 +1,5 @@
 import routes from './routes';
+import { Role } from '../store/enums';
 
 export const createOptions = [
   {
@@ -12,5 +13,6 @@ export const createOptions = [
   {
     name: 'User',
     uri: routes.platform.inviteUser,
+    access: [Role.ADMIN, Role.MANAGER],
   },
 ];

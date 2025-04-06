@@ -1,20 +1,34 @@
-import React, { useRef } from 'react';
+import React, { useRef, useContext } from 'react';
+import { Link } from 'react-router-dom';
 import { ReactComponent as Plus } from '../../svg/plus.svg';
 import { Button } from '../ui/Button';
 import { createOptions } from '../../constants/createOptions';
-import { Link } from 'react-router-dom';
 import { useIsClickOutside } from '../../hooks/useIsClickOutside';
+import { Role } from '../../store/enums';
+import { AxisContext } from '../../store/AxisContext';
+import { AccountContext } from '../../store/AccountContext';
 
 export const CreateOptions = () => {
   const ref = useRef<HTMLDivElement>(null);
-
+  const { user } = useContext(AxisContext);
+  const { selectedAccount } = useContext(AccountContext);
+  const userRoleIdForAccount = user?.roles.find(
+    (role) => Number(selectedAccount?.value) === role.companyId,
+  )?.roleId;
   const { isOpen, setIsOpen } = useIsClickOutside(ref);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  return (
+  const hasAccess = (access?: Role[]) => {
+    if (!access) return true;
+    return access.includes(userRoleIdForAccount || -1);
+  };
+
+  return userRoleIdForAccount === Role.VIEWER ? (
+    <></>
+  ) : (
     <div className='relative' ref={ref}>
       <Button
         theme={'primary'}
@@ -30,16 +44,19 @@ export const CreateOptions = () => {
             aria-orientation='vertical'
             aria-labelledby='options-menu'
           >
-            {createOptions.map((option) => (
-              <Link
-                to={option.uri}
-                key={option.name}
-                className={`py-4 px-6 flex hover:bg-main-dark-50 text-left w-full`}
-                onClick={() => setIsOpen(false)}
-              >
-                {option.name}
-              </Link>
-            ))}
+            {createOptions.map(
+              (option) =>
+                hasAccess(option.access) && (
+                  <Link
+                    to={option.uri}
+                    key={option.name}
+                    className={`py-4 px-6 flex hover:bg-main-dark-50 text-left w-full`}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {option.name}
+                  </Link>
+                ),
+            )}
           </div>
         </div>
       )}

@@ -8,7 +8,7 @@ import { API } from '../api/API';
 import type { AxiosRequestConfig } from 'axios';
 import type { Account } from './types/Account.type';
 
-const BASE_URL = 'http://localhost:8080/';
+const BASE_URL = 'http://localhost:8081/';
 
 interface AxisContextType {
   accounts: Account[];
@@ -32,7 +32,11 @@ interface AxisProviderProps {
 }
 
 type User = {
-  user: { userId: string; username: string };
+  user: {
+    userId: string;
+    username: string;
+    roles: { companyId: number; roleId: number }[];
+  };
   token: string;
 };
 

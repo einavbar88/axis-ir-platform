@@ -40,7 +40,7 @@ export const SelectAccount: React.FC = () => {
       {isOpen && (
         <div
           className={
-            'absolute z-20 top-14 -left-20 bg-main-white bg-white shadow-md rounded-lg w-52 overflow-hidden'
+            'absolute z-20 top-14 right-0 bg-main-white bg-white shadow-md rounded-lg w-52 overflow-hidden'
           }
         >
           <div className='p-4 font-bold border-b border-dashed'>

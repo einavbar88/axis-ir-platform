@@ -16,6 +16,8 @@ const users = (config: AxiosRequestConfig) => {
     logout: async (token: string | null) => {
       if (token) return axios.post(routes.api.users.logout, { token }, config);
     },
+
+    invite: async (email: string) => {},
   };
 };
 

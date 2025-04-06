@@ -42,7 +42,7 @@ export const CreateAccount: React.FC = () => {
 
   const onChangeField = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value.trim() });
+    setFormValues({ ...formValues, [name]: value?.trim() });
   };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

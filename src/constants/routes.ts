@@ -43,7 +43,7 @@ const assets = {
   notFound: `${ASSETS_PATH}/imgs/404.svg`,
   createAccount: `${ASSETS_PATH}/imgs/createAccount.svg`,
   createAsset: `${ASSETS_PATH}/imgs/createAsset.svg`,
-  noAccount: `${ASSETS_PATH}/imgs/noAccount.svg`,
+  noAccounts: `${ASSETS_PATH}/imgs/noAccounts.svg`,
   signup: `${ASSETS_PATH}/imgs/signup.png`,
   user: `${ASSETS_PATH}/imgs/user.svg`,
   manage: `${ASSETS_PATH}/imgs/manage.svg`,

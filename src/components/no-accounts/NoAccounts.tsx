@@ -15,7 +15,7 @@ export const NoAccounts: React.FC = () => {
         </Link>{' '}
         to add a new account
       </p>
-      <img alt={'No Accounts'} src={routes.assets.noAccount} />
+      <img alt={'No Accounts'} src={routes.assets.noAccounts} />
     </div>
   );
 };
