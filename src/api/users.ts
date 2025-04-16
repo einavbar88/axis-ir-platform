@@ -17,7 +17,20 @@ const users = (config: AxiosRequestConfig) => {
       if (token) return axios.post(routes.api.users.logout, { token }, config);
     },
 
-    invite: async (email: string) => {},
+    getRoles: async () => {
+      return axios.get(routes.api.users.getRoles, config);
+    },
+
+    invite: async (email: string, role: number, accountId: string) => {
+      return axios.post(
+        routes.api.users.inviteUser.replace(':companyId', accountId),
+        {
+          email,
+          role,
+        },
+        config,
+      );
+    },
   };
 };
 

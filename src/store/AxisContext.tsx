@@ -3,6 +3,7 @@ import React, {
   useState,
   type ReactNode,
   useEffect,
+  useCallback,
 } from 'react';
 import { API } from '../api/API';
 import type { AxiosRequestConfig } from 'axios';
@@ -21,6 +22,7 @@ interface AxisContextType {
   setIsPageLoading: (isPageLoading: boolean) => void;
   requestOptions: AxiosRequestConfig;
   logout: () => void;
+  roles: { label: string; value: number }[];
 }
 
 export const AxisContext = createContext<AxisContextType>(
@@ -45,6 +47,7 @@ export const AxisProvider: React.FC<AxisProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User['user'] | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(true);
+  const [roles, setRoles] = useState<{ label: string; value: number }[]>([]);
   const [requestOptions, setRequestOptions] = useState<AxiosRequestConfig>({
     baseURL: BASE_URL,
     headers: {
@@ -75,6 +78,28 @@ export const AxisProvider: React.FC<AxisProviderProps> = ({ children }) => {
     }
   }, []);
 
+  const loadFromServer = useCallback(
+    async (options: AxiosRequestConfig) => {
+      if (accounts.length === 0) {
+        await API.accounts(options)
+          .getByUserId()
+          .then(({ data }) => {
+            setAccounts(data.responseObject);
+          })
+          .catch((e) => console.log(e));
+      }
+      if (roles.length === 0) {
+        await API.users(options)
+          .getRoles()
+          .then((res) => {
+            const { roles: allRoles } = res.data.responseObject;
+            setRoles(allRoles);
+          });
+      }
+    },
+    [requestOptions],
+  );
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     const headers = {
@@ -86,14 +111,11 @@ export const AxisProvider: React.FC<AxisProviderProps> = ({ children }) => {
       baseURL: BASE_URL,
       headers,
     };
+
     setRequestOptions(options);
+
     if (token) {
-      API.accounts(options)
-        .getByUserId()
-        .then(({ data }) => {
-          setAccounts(data.responseObject);
-        })
-        .catch((e) => console.log(e));
+      loadFromServer(options);
     }
   }, [user]);
 
@@ -110,6 +132,7 @@ export const AxisProvider: React.FC<AxisProviderProps> = ({ children }) => {
         setIsPageLoading,
         requestOptions,
         logout,
+        roles,
       }}
     >
       {children}

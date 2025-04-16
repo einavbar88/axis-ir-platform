@@ -21,6 +21,8 @@ const server = {
     login: 'users/login',
     tokenLogin: 'users/tokenLogin',
     logout: 'users/logout',
+    getRoles: 'users/getRoles/all',
+    inviteUser: 'users/inviteUser/:companyId',
   },
   accounts: {
     create: 'accounts/create',

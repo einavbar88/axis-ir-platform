@@ -14,6 +14,7 @@ import { Accounts } from './pages/account/Accounts';
 import { CreateAsset } from './pages/assets/CreateAsset';
 import { Assets } from './pages/assets/Assets';
 import { ManageAsset } from './pages/assets/ManageAsset';
+import { InviteUser } from './pages/users/InviteUser';
 
 export const Router: React.FC = () => {
   const { isLoggedIn, isPageLoading } = useContext(AxisContext);
@@ -43,6 +44,7 @@ export const Router: React.FC = () => {
               path={routes.platform.manageAccount}
               element={<ManageAccount />}
             />
+            <Route path={routes.platform.inviteUser} element={<InviteUser />} />
             <Route
               path={routes.platform.createAsset}
               element={<CreateAsset />}

@@ -98,7 +98,7 @@ export const Login: React.FC = () => {
       <div
         className={`w-${screenSize.width > 900 ? '1/2' : 'full'} h-screen flex justify-center items-center bg-main-mid`}
       >
-        <div className='absolute w-full top-24 text-center'>
+        <div className='absolute w-full top-16 text-center'>
           <div className='w-full flex justify-center mb-4'>
             <img
               className={'rounded-xl'}
