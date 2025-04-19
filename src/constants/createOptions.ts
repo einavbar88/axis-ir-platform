@@ -1,7 +1,8 @@
 import routes from './routes';
 import { Role } from '../store/enums';
 
-export const createOptions = [
+export type CreateOption = { name: string; uri: string; access?: number[] };
+export const createOptions: CreateOption[] = [
   {
     name: 'Incident',
     uri: routes.platform.createIncident,
@@ -11,7 +12,11 @@ export const createOptions = [
     uri: routes.platform.createAsset,
   },
   {
-    name: 'User',
+    name: 'Asset Group',
+    uri: routes.platform.createAssetGroup,
+  },
+  {
+    name: 'Invite user',
     uri: routes.platform.inviteUser,
     access: [Role.ADMIN, Role.MANAGER],
   },

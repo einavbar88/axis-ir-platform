@@ -4,9 +4,12 @@ const platform = {
   accounts: '/accounts',
   createAccount: '/create-account',
   manageAccount: '/manage-account/:id',
+  editAccount: '/edit-account/:id',
   assets: '/assets',
   createAsset: '/create-asset',
   manageAsset: '/manage-asset/:id',
+  createAssetGroup: '?create-asset-group=true',
+  manageAssetGroup: '/manage-asset-group/:id',
   inviteUser: '/invite-user',
   createIncident: '/create-incident',
   login: '/login',
@@ -22,6 +25,7 @@ const server = {
     tokenLogin: 'users/tokenLogin',
     logout: 'users/logout',
     getRoles: 'users/getRoles/all',
+    getByCompanyId: 'users/getByCompanyId/:companyId',
     inviteUser: 'users/inviteUser/:companyId',
   },
   accounts: {
@@ -31,6 +35,7 @@ const server = {
   },
   assets: {
     create: 'assets/create',
+    createAssetGroup: 'assets/createAssetGroup',
     update: 'assets/update',
     getAssetsByAssetGroup: 'assets/getAssetsByAssetGroup',
     getAssetsByCompanyId: 'assets/getAssetsByCompanyId',

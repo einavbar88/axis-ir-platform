@@ -1,107 +1,96 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { API } from '../../api/API';
 import { AxisContext } from '../../store/AxisContext';
-import { AccountContext } from '../../store/AccountContext';
+import type { Account } from '../../store/types/Account.type';
+import type { GridColDef } from '@mui/x-data-grid';
+import { DataTable } from '../../components/ui/Table';
 import routes from '../../constants/routes';
-import { Input } from '../../components/ui/Input';
-import { Button } from '../../components/ui/Button';
 
 export const ManageAccount: React.FC = () => {
-  const { requestOptions } = useContext(AxisContext);
-  const { selectedAccount } = useContext(AccountContext);
+  const { requestOptions, roles } = useContext(AxisContext);
   const { id } = useParams();
-  const navigate = useNavigate();
-  const [accountData, setAccountData] = useState<any>({});
+
+  const [accountData, setAccountData] = useState<Account>();
+  const [data, setData] = useState<Partial<Account>[]>([]);
+  const columns: GridColDef[] = [
+    { field: 'userId', headerName: 'ID', width: 70 },
+    { field: 'username', headerName: 'User Name', minWidth: 200 },
+    { field: 'email', headerName: 'Email', width: 200 },
+    { field: 'roleId', headerName: 'Role', minWidth: 200 },
+  ];
+
+  const onSelectRow = () => {
+    console.log('onSelectRow');
+  };
 
   useEffect(() => {
-    if (!selectedAccount?.value) return;
+    API.users(requestOptions)
+      .getByCompanyId(id as string)
+      .then((res) => {
+        setData(
+          res.data.responseObject.map((user: any) => ({
+            ...user,
+            roleId: roles.find((r) => r.value === user.roleId)?.label,
+          })),
+        );
+      });
     API.accounts(requestOptions)
       .getById(Number(id))
       .then((res) => {
+        console.log(res.data.responseObject);
         setAccountData(res.data.responseObject);
-      })
-      .catch((e) => {
-        console.error(e);
-        navigate('/404');
       });
-  }, [selectedAccount]);
-
-  const onChangeField = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = e.target;
-    setAccountData({ ...accountData, [name]: value });
-  };
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(accountData);
-  };
+  }, []);
 
   return (
     <div className='flex flex-col items-center justify-center'>
-      <h1 className='text-2xl font-bold mb-4 text-center'>
-        {accountData?.name}
-      </h1>
+      <div className='flex justify-center mb-4 items-center w-full relative'>
+        <h1 className='text-2xl font-bold text-center'>Account Details</h1>
+        <Link
+          className='absolute right-12 p-2 bg-main-lightest rounded-md'
+          to={routes.platform.editAccount.replace(':id', id as string)}
+        >
+          Edit
+        </Link>
+      </div>
+      <div className='space-y-2 text-gray-700 w-full grid grid-cols-3 mb-4'>
+        <div className='flex justify-start'>
+          <span className='font-semibold mr-2'>Company ID:</span>
+          <span>{accountData?.companyId}</span>
+        </div>
+        <div className='flex justify-start'>
+          <span className='font-semibold mr-2'>CIN:</span>
+          <span>{accountData?.cin}</span>
+        </div>
+        <div className='flex justify-start'>
+          <span className='font-semibold mr-2'>Industry:</span>
+          <span>{accountData?.industry}</span>
+        </div>
+        <div className='flex justify-start'>
+          <span className='font-semibold mr-2'>Address:</span>
+          <span>{accountData?.address}</span>
+        </div>
+        <div className='flex justify-start'>
+          <span className='font-semibold mr-2'>Email:</span>
+          <span>{accountData?.primaryEmail}</span>
+        </div>
+        <div className='flex justify-start'>
+          <span className='font-semibold mr-2'>Phone:</span>
+          <span>{accountData?.primaryPhone}</span>
+        </div>
+      </div>
+      <h1 className='text-2xl font-bold mb-4 text-center'>Account users</h1>
       <div className='w-full flex justify-around'>
-        <div className='w-1/2'>
-          <img alt={'New Accounts'} src={routes.assets.createAccount} />
-        </div>
-        <div className='w-1/3 flex items-center justify-between bg-main-lightest p-4 rounded-lg'>
-          <form
-            onSubmit={onSubmit}
-            className='flex flex-col items-center w-full space-y-4'
-          >
-            <Input
-              name={'name'}
-              label={'Company name'}
-              onChange={onChangeField}
-              defaultValue={accountData?.name}
-              inputClasses={'min-w-52'}
-              isRequired
-            />
-            <Input
-              name={'primaryEmail'}
-              label={'Company email'}
-              onChange={onChangeField}
-              inputClasses={'min-w-52'}
-              defaultValue={accountData?.primaryEmail}
-              type='email'
-              isRequired
-            />
-            <Input
-              name={'cin'}
-              label={'CIN/EIN/TIN'}
-              onChange={onChangeField}
-              inputClasses={'min-w-52'}
-              defaultValue={accountData?.cin}
-              isRequired
-            />
-            <Input
-              name={'address'}
-              label={'Company address'}
-              onChange={onChangeField}
-              inputClasses={'min-w-52'}
-              defaultValue={accountData?.address}
-              isRequired
-            />
-            <Input
-              name={'primaryPhone'}
-              label={'Company phone'}
-              onChange={onChangeField}
-              inputClasses={'min-w-52'}
-              defaultValue={accountData?.primaryPhone}
-              isRequired
-            />
-            <Input
-              name={'industry'}
-              label={'Industry'}
-              onChange={onChangeField}
-              inputClasses={'min-w-52'}
-              defaultValue={accountData?.industry}
-              isRequired
-            />
-            <Button type={'submit'} text={'Update'} theme={'primary'} />
-          </form>
-        </div>
+        <DataTable
+          rows={data}
+          columns={columns}
+          onClickRow={onSelectRow}
+          paginationModel={{ page: 0, pageSize: 5 }}
+          disableColumnFilter={true}
+          disableColumnMenu={true}
+          disableColumnSelector={true}
+        />
       </div>
     </div>
   );

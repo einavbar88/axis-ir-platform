@@ -31,6 +31,13 @@ const users = (config: AxiosRequestConfig) => {
         config,
       );
     },
+
+    getByCompanyId: async (companyId: string) => {
+      return axios.get(
+        routes.api.users.getByCompanyId.replace(':companyId', companyId),
+        config,
+      );
+    },
   };
 };
 

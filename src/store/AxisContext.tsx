@@ -4,10 +4,12 @@ import React, {
   type ReactNode,
   useEffect,
   useCallback,
+  useRef,
 } from 'react';
 import { API } from '../api/API';
 import type { AxiosRequestConfig } from 'axios';
 import type { Account } from './types/Account.type';
+import { useIsClickOutside } from '../hooks/useIsClickOutside';
 
 const BASE_URL = 'http://localhost:8081/';
 
@@ -23,6 +25,9 @@ interface AxisContextType {
   requestOptions: AxiosRequestConfig;
   logout: () => void;
   roles: { label: string; value: number }[];
+  createAssetGroupModalRef: React.RefObject<HTMLDivElement>;
+  createAssetGroupModal: boolean;
+  setCreateAssetGroupModal: (isOpen: boolean) => void;
 }
 
 export const AxisContext = createContext<AxisContextType>(
@@ -54,6 +59,10 @@ export const AxisProvider: React.FC<AxisProviderProps> = ({ children }) => {
       'Content-Type': 'application/json',
     },
   });
+
+  const createAssetGroupModalRef = useRef<HTMLDivElement>(null);
+  const { isOpen: createAssetGroupModal, setIsOpen: setCreateAssetGroupModal } =
+    useIsClickOutside(createAssetGroupModalRef);
 
   const logout = async () => {
     setIsLoggedIn(false);
@@ -133,6 +142,9 @@ export const AxisProvider: React.FC<AxisProviderProps> = ({ children }) => {
         requestOptions,
         logout,
         roles,
+        createAssetGroupModal,
+        setCreateAssetGroupModal,
+        createAssetGroupModalRef,
       }}
     >
       {children}

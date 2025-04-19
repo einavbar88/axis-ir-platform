@@ -6,19 +6,7 @@ import { AxisContext } from '../../store/AxisContext';
 import { AccountContext } from '../../store/AccountContext';
 import { API } from '../../api/API';
 import routes from '../../constants/routes';
-
-export interface CreateAssetForm {
-  name: string;
-  type: string;
-  operatingSystem: string;
-  status: string;
-  tlp: string;
-  priority: number;
-  parentAssetId?: number;
-  assetGroupId?: number;
-  companyId?: string;
-  createdAt?: string;
-}
+import type { CreateAssetForm } from './types';
 
 export const CreateAsset: React.FC = () => {
   const { requestOptions } = useContext(AxisContext);

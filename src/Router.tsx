@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import React, { useContext, useEffect } from 'react';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { AxisContext } from './store/AxisContext';
 import { AccountProvider } from './store/AccountContext';
 import { TopBar } from './components/top-bar/TopBar';
@@ -15,9 +15,34 @@ import { CreateAsset } from './pages/assets/CreateAsset';
 import { Assets } from './pages/assets/Assets';
 import { ManageAsset } from './pages/assets/ManageAsset';
 import { InviteUser } from './pages/users/InviteUser';
+import { EditAccount } from './pages/account/EditAccount';
+import { CreateAssetGroup } from './pages/assets/asset-groups/CreateAssetGroup';
 
 export const Router: React.FC = () => {
-  const { isLoggedIn, isPageLoading } = useContext(AxisContext);
+  const {
+    isLoggedIn,
+    isPageLoading,
+    createAssetGroupModal,
+    setCreateAssetGroupModal,
+  } = useContext(AxisContext);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (
+      location.search.includes('create-asset-group=true') &&
+      !createAssetGroupModal
+    ) {
+      setCreateAssetGroupModal(true);
+    }
+
+    if (
+      !location.search.includes('create-asset-group=true') &&
+      createAssetGroupModal
+    ) {
+      setCreateAssetGroupModal(true);
+    }
+  }, [location]);
 
   if (isPageLoading) {
     return (
@@ -39,6 +64,10 @@ export const Router: React.FC = () => {
             <Route
               path={routes.platform.createAccount}
               element={<CreateAccount />}
+            />
+            <Route
+              path={routes.platform.editAccount}
+              element={<EditAccount />}
             />
             <Route
               path={routes.platform.manageAccount}
@@ -71,6 +100,7 @@ export const Router: React.FC = () => {
             />
           </Routes>
         </div>
+        {createAssetGroupModal && <CreateAssetGroup />}
       </AccountProvider>
     </>
   ) : (

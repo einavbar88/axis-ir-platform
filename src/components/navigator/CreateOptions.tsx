@@ -2,7 +2,10 @@ import React, { useRef, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { ReactComponent as Plus } from '../../svg/plus.svg';
 import { Button } from '../ui/Button';
-import { createOptions } from '../../constants/createOptions';
+import {
+  createOptions,
+  type CreateOption,
+} from '../../constants/createOptions';
 import { useIsClickOutside } from '../../hooks/useIsClickOutside';
 import { Role } from '../../store/enums';
 import { AxisContext } from '../../store/AxisContext';
@@ -45,7 +48,7 @@ export const CreateOptions = () => {
             aria-labelledby='options-menu'
           >
             {createOptions.map(
-              (option) =>
+              (option: CreateOption) =>
                 hasAccess(option.access) && (
                   <Link
                     to={option.uri}

@@ -30,22 +30,27 @@ export const AccountProvider: React.FC<AccountProviderProps> = ({
   children,
 }) => {
   const { accounts: dbAccounts } = useContext(AxisContext);
-
   const [selectedAccount, setSelectedAccount] = useState<Option>();
   const [accounts, setAccounts] = useState<Option[]>([]);
 
   useEffect(() => {
-    const accounts = dbAccounts.map(
-      (account: { name: string; companyId: string }) => ({
-        label: account.name,
-        value: account.companyId,
-      }),
-    );
-    setAccounts(accounts);
-    if (!selectedAccount) {
-      setSelectedAccount(accounts[0]);
+    if (dbAccounts.length > 0) {
+      const accounts = dbAccounts.map(
+        (account: { name: string; companyId: string }) => ({
+          label: account.name,
+          value: account.companyId,
+        }),
+      );
+
+      setAccounts(accounts);
     }
   }, [dbAccounts]);
+
+  useEffect(() => {
+    if (accounts.length > 0 && !selectedAccount) {
+      setSelectedAccount(accounts[0]);
+    }
+  }, [accounts, selectedAccount]);
 
   return (
     <AccountContext.Provider

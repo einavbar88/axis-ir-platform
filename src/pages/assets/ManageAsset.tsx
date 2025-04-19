@@ -6,7 +6,7 @@ import { AccountContext } from '../../store/AccountContext';
 import routes from '../../constants/routes';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
-import type { CreateAssetForm } from './CreateAsset';
+import type { CreateAssetForm } from './types';
 
 export const ManageAsset: React.FC = () => {
   const { requestOptions } = useContext(AxisContext);

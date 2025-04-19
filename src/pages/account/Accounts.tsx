@@ -23,10 +23,9 @@ export const Accounts: React.FC = () => {
     { field: 'address', headerName: 'Address', minWidth: 130 },
   ];
 
-  const onSelectRow = (data: any) => {
-    const { row, id } = data;
-    setSelectedAccount({ value: id, label: row.name });
-    navigate(routes.platform.manageAccount.replace(':id', id));
+  const onSelectRow = ({ row }: any) => {
+    setSelectedAccount({ value: row.id, label: row.name });
+    navigate(routes.platform.manageAccount.replace(':id', row.id));
   };
 
   useEffect(() => {
