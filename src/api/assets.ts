@@ -14,8 +14,20 @@ const assets = (config: AxiosRequestConfig) => ({
     axios.get(`${routes.api.assets.getAssetsByCompanyId}/${companyId}`, config),
   getById: async (id: number) =>
     axios.get(`${routes.api.assets.getById}/${id}`, config),
+  getAssetGroups: async (companyId: string) =>
+    axios.get(`${routes.api.assets.getAssetGroups}/${companyId}`, config),
   createAssetGroup: async (createForm: CreateAssetGroupForm) =>
     axios.post(routes.api.assets.createAssetGroup, createForm, config),
+  assignAssetToGroup: async (
+    assetGroupId: number,
+    assetId: number,
+    isRemove?: boolean,
+  ) =>
+    axios.post(
+      routes.api.assets.assignAssetToGroup,
+      { assetGroupId, assetId, isRemove },
+      config,
+    ),
 });
 
 export default assets;

@@ -9,6 +9,7 @@ type Props = {
   icon?: () => ReactElement;
   type?: 'button' | 'submit';
   linkTo?: string;
+  disabled?: boolean;
 };
 
 export const Button: React.FC<Props> = ({
@@ -19,6 +20,7 @@ export const Button: React.FC<Props> = ({
   theme,
   type = 'button',
   linkTo,
+  disabled = false,
 }) => {
   const getThemeStyles = () => {
     switch (theme) {
@@ -47,6 +49,7 @@ export const Button: React.FC<Props> = ({
       type={type}
       onClick={onClick}
       className={`${getThemeStyles()} ${buttonClasses}`}
+      disabled={disabled}
     >
       <p>{text}</p>
       {icon ? icon() : null}

@@ -10,8 +10,7 @@ import type { CreateAssetGroupForm } from '../types';
 import { AxisIRModal } from '../../../components/ui/AxisIRModal';
 
 export const CreateAssetGroup: React.FC = () => {
-  const { requestOptions, createAssetGroupModalRef, setCreateAssetGroupModal } =
-    useContext(AxisContext);
+  const { requestOptions, modals } = useContext(AxisContext);
   const { selectedAccount } = useContext(AccountContext);
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,7 +29,7 @@ export const CreateAssetGroup: React.FC = () => {
   };
 
   const close = () => {
-    setCreateAssetGroupModal(false);
+    modals.createAssetGroup.setIsOpen(false);
     navigate(location.pathname);
   };
 
@@ -50,7 +49,7 @@ export const CreateAssetGroup: React.FC = () => {
     API.assets(requestOptions)
       .createAssetGroup(payload)
       .then((res) => {
-        setCreateAssetGroupModal(false);
+        modals.createAssetGroup.setIsOpen(false);
         navigate(
           routes.platform.manageAssetGroup.replace(
             ':id',
@@ -66,7 +65,7 @@ export const CreateAssetGroup: React.FC = () => {
   return (
     <AxisIRModal
       title='Create Asset Group'
-      ref={createAssetGroupModalRef}
+      ref={modals.createAssetGroup.ref}
       close={close}
     >
       <form onSubmit={onSubmit}>

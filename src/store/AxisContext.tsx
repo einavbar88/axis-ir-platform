@@ -13,6 +13,13 @@ import { useIsClickOutside } from '../hooks/useIsClickOutside';
 
 const BASE_URL = 'http://localhost:8081/';
 
+type ModalData = {
+  ref: React.RefObject<HTMLDivElement>;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  param: string;
+};
+
 interface AxisContextType {
   accounts: Account[];
   setAccounts: (accounts: Account[]) => void;
@@ -25,9 +32,10 @@ interface AxisContextType {
   requestOptions: AxiosRequestConfig;
   logout: () => void;
   roles: { label: string; value: number }[];
-  createAssetGroupModalRef: React.RefObject<HTMLDivElement>;
-  createAssetGroupModal: boolean;
-  setCreateAssetGroupModal: (isOpen: boolean) => void;
+  modals: {
+    createAssetGroup: ModalData;
+    inviteUser: ModalData;
+  };
 }
 
 export const AxisContext = createContext<AxisContextType>(
@@ -60,9 +68,16 @@ export const AxisProvider: React.FC<AxisProviderProps> = ({ children }) => {
     },
   });
 
+  // modals
   const createAssetGroupModalRef = useRef<HTMLDivElement>(null);
   const { isOpen: createAssetGroupModal, setIsOpen: setCreateAssetGroupModal } =
     useIsClickOutside(createAssetGroupModalRef);
+
+  const inviteUserModalRef = useRef<HTMLDivElement>(null);
+  const { isOpen: inviteUserModal, setIsOpen: setInviteUserModal } =
+    useIsClickOutside(inviteUserModalRef);
+
+  /////////
 
   const logout = async () => {
     setIsLoggedIn(false);
@@ -142,9 +157,20 @@ export const AxisProvider: React.FC<AxisProviderProps> = ({ children }) => {
         requestOptions,
         logout,
         roles,
-        createAssetGroupModal,
-        setCreateAssetGroupModal,
-        createAssetGroupModalRef,
+        modals: {
+          createAssetGroup: {
+            ref: createAssetGroupModalRef,
+            isOpen: createAssetGroupModal,
+            setIsOpen: setCreateAssetGroupModal,
+            param: 'create-asset-group',
+          },
+          inviteUser: {
+            ref: inviteUserModalRef,
+            isOpen: inviteUserModal,
+            setIsOpen: setInviteUserModal,
+            param: 'invite-user',
+          },
+        },
       }}
     >
       {children}

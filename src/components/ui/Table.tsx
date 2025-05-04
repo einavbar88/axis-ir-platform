@@ -22,7 +22,7 @@ export const DataTable: React.FC<Props> = ({
   disableColumnFilter,
 }) => {
   return (
-    <Paper sx={{ maxHeight: 400, width: '100%' }}>
+    <Paper sx={{ width: '100%' }}>
       <DataGrid
         getRowId={() => Math.random().toString()}
         rows={rows}

@@ -6,13 +6,15 @@ import { API } from '../../api/API';
 import { AxisContext } from '../../store/AxisContext';
 import { AccountContext } from '../../store/AccountContext';
 import { useNavigate } from 'react-router-dom';
+import { AxisIRModal } from '../../components/ui/AxisIRModal';
+import { UserRole } from '../../components/UserRole';
 
 type UserToInvite = {
   email: string;
   role?: number;
 };
 export const InviteUser: React.FC = () => {
-  const { requestOptions, roles } = useContext(AxisContext);
+  const { requestOptions, roles, modals } = useContext(AxisContext);
   const { selectedAccount } = useContext(AccountContext);
   const [userToInvite, setUserToInvite] = useState<UserToInvite>({
     email: '',
@@ -30,7 +32,7 @@ export const InviteUser: React.FC = () => {
       role || roles[0].value,
       accountId,
     );
-    navigate(routes.platform.manageAccount.replace(':id', accountId));
+    navigate(routes.platform.users);
   };
 
   const onChangeField = (
@@ -45,46 +47,34 @@ export const InviteUser: React.FC = () => {
     setUserToInvite(temp);
   };
 
+  const close = () => {
+    modals.inviteUser.setIsOpen(false);
+  };
+
   return (
-    <div className='w-full flex flex-col justify-center items-center'>
-      <h1 className='text-2xl font-bold my-5'>Invite a user</h1>
-      <div className='w-full flex justify-around'>
-        <div className='w-1/2'>
-          <img alt={'New Accounts'} src={routes.assets.createAccount} />
+    <AxisIRModal
+      title='Invite user to account'
+      ref={modals.inviteUser.ref}
+      close={close}
+    >
+      <form onSubmit={onSubmit}>
+        <Input
+          name={'email'}
+          label={'User email'}
+          onChange={onChangeField}
+          type='email'
+          isRequired
+        />
+        <UserRole onChangeField={onChangeField} roles={roles} />
+        <div className={'flex justify-end'}>
+          <Button
+            type={'submit'}
+            text={'Create'}
+            theme={'primary'}
+            disabled={!userToInvite.role && !userToInvite.email?.trim()}
+          />
         </div>
-        <div className='w-1/3 flex items-center justify-between bg-main-lightest p-4 rounded-lg'>
-          <form
-            onSubmit={onSubmit}
-            className='flex flex-col items-center w-full space-y-4'
-          >
-            <Input
-              name={'email'}
-              label={'User email'}
-              onChange={onChangeField}
-              inputClasses={'min-w-52'}
-              type='email'
-              isRequired
-            />
-            <div className='flex w-full'>
-              <label>
-                Role
-                <select
-                  name={'role'}
-                  className='p-2 rounded-lg ml-2'
-                  onChange={onChangeField}
-                >
-                  {roles?.map((role) => (
-                    <option key={role.value} value={role.value}>
-                      {role.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-            <Button type={'submit'} text={'Create'} theme={'primary'} />
-          </form>
-        </div>
-      </div>
-    </div>
+      </form>
+    </AxisIRModal>
   );
 };

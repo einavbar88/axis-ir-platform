@@ -8,16 +8,12 @@ import {
 } from '../../constants/createOptions';
 import { useIsClickOutside } from '../../hooks/useIsClickOutside';
 import { Role } from '../../store/enums';
-import { AxisContext } from '../../store/AxisContext';
 import { AccountContext } from '../../store/AccountContext';
 
 export const CreateOptions = () => {
   const ref = useRef<HTMLDivElement>(null);
-  const { user } = useContext(AxisContext);
-  const { selectedAccount } = useContext(AccountContext);
-  const userRoleIdForAccount = user?.roles.find(
-    (role) => Number(selectedAccount?.value) === role.companyId,
-  )?.roleId;
+  const { userRoleIdForAccount } = useContext(AccountContext);
+
   const { isOpen, setIsOpen } = useIsClickOutside(ref);
 
   const toggleDropdown = () => {

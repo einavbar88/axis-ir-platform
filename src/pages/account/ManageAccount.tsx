@@ -3,42 +3,18 @@ import { Link, useParams } from 'react-router-dom';
 import { API } from '../../api/API';
 import { AxisContext } from '../../store/AxisContext';
 import type { Account } from '../../store/types/Account.type';
-import type { GridColDef } from '@mui/x-data-grid';
-import { DataTable } from '../../components/ui/Table';
 import routes from '../../constants/routes';
 
 export const ManageAccount: React.FC = () => {
-  const { requestOptions, roles } = useContext(AxisContext);
+  const { requestOptions } = useContext(AxisContext);
   const { id } = useParams();
 
   const [accountData, setAccountData] = useState<Account>();
-  const [data, setData] = useState<Partial<Account>[]>([]);
-  const columns: GridColDef[] = [
-    { field: 'userId', headerName: 'ID', width: 70 },
-    { field: 'username', headerName: 'User Name', minWidth: 200 },
-    { field: 'email', headerName: 'Email', width: 200 },
-    { field: 'roleId', headerName: 'Role', minWidth: 200 },
-  ];
-
-  const onSelectRow = () => {
-    console.log('onSelectRow');
-  };
 
   useEffect(() => {
-    API.users(requestOptions)
-      .getByCompanyId(id as string)
-      .then((res) => {
-        setData(
-          res.data.responseObject.map((user: any) => ({
-            ...user,
-            roleId: roles.find((r) => r.value === user.roleId)?.label,
-          })),
-        );
-      });
     API.accounts(requestOptions)
       .getById(Number(id))
       .then((res) => {
-        console.log(res.data.responseObject);
         setAccountData(res.data.responseObject);
       });
   }, []);
@@ -79,18 +55,6 @@ export const ManageAccount: React.FC = () => {
           <span className='font-semibold mr-2'>Phone:</span>
           <span>{accountData?.primaryPhone}</span>
         </div>
-      </div>
-      <h1 className='text-2xl font-bold mb-4 text-center'>Account users</h1>
-      <div className='w-full flex justify-around'>
-        <DataTable
-          rows={data}
-          columns={columns}
-          onClickRow={onSelectRow}
-          paginationModel={{ page: 0, pageSize: 5 }}
-          disableColumnFilter={true}
-          disableColumnMenu={true}
-          disableColumnSelector={true}
-        />
       </div>
     </div>
   );

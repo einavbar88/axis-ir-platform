@@ -7,10 +7,12 @@ import routes from '../../constants/routes';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import type { CreateAssetForm } from './types';
+import Select from 'react-select';
+import { tlpOptions } from '../../constants/common';
 
 export const ManageAsset: React.FC = () => {
   const { requestOptions } = useContext(AxisContext);
-  const { selectedAccount } = useContext(AccountContext);
+  const { selectedAccount, assetGroupOptions } = useContext(AccountContext);
   const { id } = useParams();
   const navigate = useNavigate();
   const [assetData, setAssetData] = useState<CreateAssetForm>({
@@ -20,7 +22,6 @@ export const ManageAsset: React.FC = () => {
     status: '',
     tlp: '',
     priority: 0,
-    parentAssetId: undefined,
     assetGroupId: undefined,
   });
   const [isLoading, setIsLoading] = useState(true);
@@ -41,9 +42,12 @@ export const ManageAsset: React.FC = () => {
       });
   }, [selectedAccount, id, requestOptions, navigate]);
 
-  const onChangeField = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
+  const onChangeField = (e: {
+    target: {
+      name: string;
+      value: string | number | string[] | number[] | undefined;
+    };
+  }) => {
     const { value, name } = e.target;
     setAssetData({ ...assetData, [name]: value });
   };
@@ -60,8 +64,6 @@ export const ManageAsset: React.FC = () => {
       });
   };
 
-  // TLP color options
-  const tlpOptions = ['white', 'green', 'amber', 'red'];
   // Status options
   const statusOptions = ['active', 'inactive', 'maintenance', 'decommissioned'];
   // Operating system options
@@ -105,6 +107,7 @@ export const ManageAsset: React.FC = () => {
                 Asset Type
               </p>
               <select
+                required
                 name='type'
                 value={assetData.type || ''}
                 onChange={onChangeField}
@@ -124,6 +127,7 @@ export const ManageAsset: React.FC = () => {
                 Operating System
               </p>
               <select
+                required
                 name='operatingSystem'
                 value={assetData.operatingSystem || ''}
                 onChange={onChangeField}
@@ -141,6 +145,7 @@ export const ManageAsset: React.FC = () => {
             <div className='w-full'>
               <p className='block text-sm font-medium text-gray-700'>Status</p>
               <select
+                required
                 name='status'
                 value={assetData.status || ''}
                 onChange={onChangeField}
@@ -163,6 +168,8 @@ export const ManageAsset: React.FC = () => {
                 onChange={onChangeField}
                 defaultValue={assetData.priority || ''}
                 inputClasses={'min-w-52'}
+                min={1}
+                max={5}
               />
             </div>
 
@@ -171,6 +178,7 @@ export const ManageAsset: React.FC = () => {
                 Traffic Light Protocol (TLP)
               </p>
               <select
+                required
                 name='tlp'
                 value={assetData.tlp || ''}
                 onChange={onChangeField}
@@ -186,22 +194,28 @@ export const ManageAsset: React.FC = () => {
             </div>
 
             <div className='w-full'>
-              <Input
-                name='parentAssetId'
-                label='Parent Asset (optional)'
-                type='number'
-                onChange={onChangeField}
-                defaultValue={assetData.parentAssetId || ''}
-                inputClasses={'min-w-52'}
-              />
-
-              <Input
+              <p className='block text-sm font-medium text-gray-700'>
+                Asset Groups (optional)
+              </p>
+              <Select
+                required
+                isMulti
                 name='assetGroupId'
-                label='Asset Group (optional)'
-                type='number'
-                onChange={onChangeField}
-                defaultValue={assetData.assetGroupId || ''}
-                inputClasses={'min-w-52 w-100'}
+                options={assetGroupOptions}
+                value={JSON.parse(assetData.assetGroupId ?? '[]').map(
+                  (groupId: number) =>
+                    assetGroupOptions.find(
+                      (group) => Number(group.value) === groupId,
+                    ),
+                )}
+                onChange={(newValue) =>
+                  onChangeField({
+                    target: {
+                      name: 'assetGroupId',
+                      value: newValue.map((v) => v.value),
+                    },
+                  })
+                }
               />
             </div>
 

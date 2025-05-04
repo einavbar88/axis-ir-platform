@@ -21,6 +21,17 @@ const users = (config: AxiosRequestConfig) => {
       return axios.get(routes.api.users.getRoles, config);
     },
 
+    changeRole: async (userId: number, role: number, accountId: string) => {
+      return axios.post(
+        routes.api.users.changeRole.replace(':companyId', accountId),
+        {
+          userId,
+          role,
+        },
+        config,
+      );
+    },
+
     invite: async (email: string, role: number, accountId: string) => {
       return axios.post(
         routes.api.users.inviteUser.replace(':companyId', accountId),

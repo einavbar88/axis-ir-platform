@@ -8,10 +8,14 @@ const platform = {
   assets: '/assets',
   createAsset: '/create-asset',
   manageAsset: '/manage-asset/:id',
+  assetGroups: '/asset-groups',
   createAssetGroup: '?create-asset-group=true',
   manageAssetGroup: '/manage-asset-group/:id',
-  inviteUser: '/invite-user',
+  inviteUser: '?invite-user=true',
+  users: '/users',
+  incidents: '/incidents',
   createIncident: '/create-incident',
+  incident: '/incident/:id',
   login: '/login',
   register: '/register',
   profile: '/profile',
@@ -27,6 +31,7 @@ const server = {
     getRoles: 'users/getRoles/all',
     getByCompanyId: 'users/getByCompanyId/:companyId',
     inviteUser: 'users/inviteUser/:companyId',
+    changeRole: 'users/changeRole/:companyId',
   },
   accounts: {
     create: 'accounts/create',
@@ -36,10 +41,18 @@ const server = {
   assets: {
     create: 'assets/create',
     createAssetGroup: 'assets/createAssetGroup',
+    assignAssetToGroup: 'assignAssetToGroup',
     update: 'assets/update',
     getAssetsByAssetGroup: 'assets/getAssetsByAssetGroup',
     getAssetsByCompanyId: 'assets/getAssetsByCompanyId',
     getById: 'assets/getById',
+    getAssetGroups: 'assets/getAssetGroups',
+  },
+  incidents: {
+    create: 'incidents/create',
+    getByCompanyId: 'incidents/getByCompanyId',
+    getById: 'incidents/getById',
+    update: 'incidents/update',
   },
 };
 
@@ -54,6 +67,7 @@ const assets = {
   signup: `${ASSETS_PATH}/imgs/signup.png`,
   user: `${ASSETS_PATH}/imgs/user.svg`,
   manage: `${ASSETS_PATH}/imgs/manage.svg`,
+  incident: `${ASSETS_PATH}/imgs/incident.svg`,
   chevron: `${ASSETS_PATH}/icons/chevron.svg`,
 };
 

@@ -10,6 +10,8 @@ type Props = {
   labelClasses?: string;
   errorMessage?: string;
   defaultValue?: string | number;
+  min?: number;
+  max?: number;
 };
 
 export const Input: React.FC<Props> = ({
@@ -22,6 +24,8 @@ export const Input: React.FC<Props> = ({
   name,
   errorMessage,
   defaultValue = '',
+  min,
+  max,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [inputType, setInputType] = useState(type);
@@ -34,6 +38,8 @@ export const Input: React.FC<Props> = ({
   useEffect(() => {
     onChange({ target: { value, name } });
   }, [value]);
+
+  const numInputProps = type === 'number' ? { min, max } : {};
 
   return (
     <div>
@@ -54,6 +60,7 @@ export const Input: React.FC<Props> = ({
           name={name}
           className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 
         focus:border-indigo-500 sm:text-sm ${inputClasses}`}
+          {...numInputProps}
         />
         {type === 'password' && (
           <button

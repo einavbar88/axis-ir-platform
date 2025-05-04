@@ -1,28 +1,26 @@
 import React, { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Input } from '../../components/ui/Input';
-import { Button } from '../../components/ui/Button';
 import { AxisContext } from '../../store/AxisContext';
 import { AccountContext } from '../../store/AccountContext';
+import { useNavigate } from 'react-router-dom';
+import type { Incident } from '../assets/types';
 import { API } from '../../api/API';
 import routes from '../../constants/routes';
-import type { CreateAssetForm } from './types';
-import Select from 'react-select';
-import { tlpOptions } from '../../constants/common';
+import { Input } from '../../components/ui/Input';
+import { Button } from '../../components/ui/Button';
+import { incidentStatusOptions, tlpOptions } from '../../constants/common';
+import { RichTextEditor } from '../../components/ui/rich-text-editor';
 
-export const CreateAsset: React.FC = () => {
+export const CreateIncident: React.FC = () => {
   const { requestOptions } = useContext(AxisContext);
-  const { selectedAccount, assetGroupOptions } = useContext(AccountContext);
+  const { selectedAccount } = useContext(AccountContext);
   const navigate = useNavigate();
 
-  const [assetData, setAssetData] = useState<CreateAssetForm>({
-    name: '',
-    type: '',
-    operatingSystem: '',
+  const [incidentData, setIncidentData] = useState<Incident>({
+    title: '',
+    description: '',
     status: '',
     tlp: '',
     priority: 0,
-    assetGroupId: undefined,
   });
 
   const onChangeField = (e: {
@@ -32,7 +30,7 @@ export const CreateAsset: React.FC = () => {
     };
   }) => {
     const { value, name } = e.target;
-    setAssetData({ ...assetData, [name]: value });
+    setIncidentData({ ...incidentData, [name]: value });
   };
 
   const onSubmit = (e: React.FormEvent) => {
@@ -43,33 +41,33 @@ export const CreateAsset: React.FC = () => {
       return;
     }
 
-    const payload: CreateAssetForm = {
-      ...assetData,
-      companyId: selectedAccount?.value,
-      createdAt: new Date().toISOString(),
+    const payload: Incident = {
+      ...incidentData,
+      companyId: Number(selectedAccount?.value),
+      openedAt: new Date().toISOString(),
     };
 
-    API.assets(requestOptions)
+    API.incidents(requestOptions)
       .create(payload)
       .then((res) => {
-        navigate(routes.platform.assets);
+        navigate(
+          routes.platform.incident.replace(
+            ':id',
+            res.data.responseObject.caseId,
+          ),
+        );
       })
       .catch((err) => {
         console.error('Error creating asset:', err);
       });
   };
 
-  // Status options
-  const statusOptions = ['active', 'inactive', 'maintenance', 'decommissioned'];
-  // Operating system options
-  const osOptions = ['Windows', 'macOS', 'Linux', 'iOS', 'Android', 'Other'];
-
   return (
     <div className='w-full flex flex-col justify-center items-center'>
-      <h1 className='text-2xl font-bold my-5'>Create New Asset</h1>
+      <h1 className='text-2xl font-bold my-5'>Create New Incident</h1>
       <div className='w-full flex justify-around'>
         <div className='w-1/2'>
-          <img alt={'New Asset'} src={routes.assets.createAsset} />
+          <img alt={'New Asset'} src={routes.assets.incident} />
         </div>
         <div className='w-1/3 flex items-center justify-between bg-main-lightest p-4 rounded-lg'>
           <form
@@ -78,50 +76,22 @@ export const CreateAsset: React.FC = () => {
           >
             <div className='w-full'>
               <Input
-                name='name'
-                label='Asset Name'
+                name='title'
+                label='Title'
                 onChange={onChangeField}
                 inputClasses={'min-w-52'}
                 isRequired
               />
             </div>
-
             <div className='w-full'>
               <p className='block text-sm font-medium text-gray-700'>
-                Asset Type
+                Description
               </p>
-              <select
-                required
-                name='type'
-                onChange={onChangeField}
-                className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
-              >
-                <option value=''>Select Asset Type</option>
-                <option value='Server'>Server</option>
-                <option value='Workstation'>Workstation</option>
-                <option value='Mobile'>Mobile Device</option>
-                <option value='IoT'>IoT Device</option>
-                <option value='Network'>Network Device</option>
-              </select>
-            </div>
-
-            <div className='w-full'>
-              <p className='block text-sm font-medium text-gray-700'>
-                Operating System
-              </p>
-              <select
-                required
-                name='operatingSystem'
-                onChange={onChangeField}
-                className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
-              >
-                <option value=''>Select Operating System</option>
-                {osOptions.map((os) => (
-                  <option key={os} value={os}>
-                    {os}
-                  </option>
-                ))}
-              </select>
+              <RichTextEditor
+                name={'description'}
+                value={incidentData.description}
+                onChange={(e) => onChangeField(e as any)}
+              />
             </div>
 
             <div className='w-full'>
@@ -133,7 +103,7 @@ export const CreateAsset: React.FC = () => {
                 className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
               >
                 <option value=''>Select Status</option>
-                {statusOptions.map((status) => (
+                {incidentStatusOptions.map((status) => (
                   <option key={status} value={status}>
                     {status.charAt(0).toUpperCase() + status.slice(1)}
                   </option>
@@ -169,25 +139,6 @@ export const CreateAsset: React.FC = () => {
                   </option>
                 ))}
               </select>
-            </div>
-            <div className='w-full'>
-              <p className='block text-sm font-medium text-gray-700'>
-                Asset Groups (optional)
-              </p>
-              <Select
-                required
-                isMulti
-                name='assetGroupId'
-                options={assetGroupOptions}
-                onChange={(newValue) =>
-                  onChangeField({
-                    target: {
-                      name: 'assetGroupId',
-                      value: newValue.map((v) => v.value),
-                    },
-                  })
-                }
-              />
             </div>
 
             <Button type={'submit'} text={'Create'} theme={'primary'} />

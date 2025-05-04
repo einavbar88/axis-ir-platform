@@ -17,12 +17,13 @@ interface Asset {
   status: string;
   tlp: string;
   priority: number;
+  assetGroupId?: string;
   lastHeartbeat?: string;
 }
 
 export const Assets: React.FC = () => {
   const { requestOptions } = useContext(AxisContext);
-  const { selectedAccount } = useContext(AccountContext);
+  const { selectedAccount, assetGroupOptions } = useContext(AccountContext);
   const navigate = useNavigate();
   const [assets, setAssets] = useState<Asset[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -42,7 +43,11 @@ export const Assets: React.FC = () => {
       headerName: 'TLP',
       width: 100,
     },
-    { field: 'priority', headerName: 'Priority', width: 100, type: 'number' },
+    {
+      field: 'assetGroupId',
+      headerName: 'Asset Groups',
+      minWidth: 200,
+    },
     {
       field: 'lastHeartbeat',
       headerName: 'Last Heartbeat',
@@ -56,7 +61,18 @@ export const Assets: React.FC = () => {
       API.assets(requestOptions)
         .getAssets(selectedAccount?.value)
         .then((res) => {
-          setAssets(res.data.responseObject || []);
+          const withGroups = res.data.responseObject.map((asset: Asset) => ({
+            ...asset,
+            assetGroupId: JSON.parse(asset.assetGroupId ?? '[]')
+              .map(
+                (groupId: number) =>
+                  assetGroupOptions.find(
+                    (group) => Number(group.value) === groupId,
+                  )?.label,
+              )
+              .join(', '),
+          }));
+          setAssets(withGroups);
           setLoading(false);
         })
         .catch((err: any) => {
@@ -64,7 +80,7 @@ export const Assets: React.FC = () => {
           setLoading(false);
         });
     }
-  }, [selectedAccount, requestOptions]);
+  }, [selectedAccount, requestOptions, assetGroupOptions]);
 
   return (
     <div className='flex flex-col w-full'>

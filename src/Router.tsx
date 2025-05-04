@@ -17,31 +17,27 @@ import { ManageAsset } from './pages/assets/ManageAsset';
 import { InviteUser } from './pages/users/InviteUser';
 import { EditAccount } from './pages/account/EditAccount';
 import { CreateAssetGroup } from './pages/assets/asset-groups/CreateAssetGroup';
+import { AssetGroups } from './pages/assets/asset-groups/AssetGroups';
+import { ManageAssetGroup } from './pages/assets/asset-groups/ManageAssetGroup';
+import { Users } from './pages/users/Users';
+import { CreateIncident } from './pages/incidents/CreateIncident';
+import { Incident } from './pages/incidents/Incident';
 
 export const Router: React.FC = () => {
-  const {
-    isLoggedIn,
-    isPageLoading,
-    createAssetGroupModal,
-    setCreateAssetGroupModal,
-  } = useContext(AxisContext);
+  const { isLoggedIn, isPageLoading, modals } = useContext(AxisContext);
 
   const location = useLocation();
 
   useEffect(() => {
-    if (
-      location.search.includes('create-asset-group=true') &&
-      !createAssetGroupModal
-    ) {
-      setCreateAssetGroupModal(true);
-    }
+    Object.values(modals).forEach((modal) => {
+      if (location.search.includes(`${modal.param}=true`) && !modal.isOpen) {
+        modal.setIsOpen(true);
+      }
 
-    if (
-      !location.search.includes('create-asset-group=true') &&
-      createAssetGroupModal
-    ) {
-      setCreateAssetGroupModal(true);
-    }
+      if (!location.search.includes(`${modal.param}=true`) && modal.isOpen) {
+        modal.setIsOpen(true);
+      }
+    });
   }, [location]);
 
   if (isPageLoading) {
@@ -73,7 +69,7 @@ export const Router: React.FC = () => {
               path={routes.platform.manageAccount}
               element={<ManageAccount />}
             />
-            <Route path={routes.platform.inviteUser} element={<InviteUser />} />
+            <Route path={routes.platform.users} element={<Users />} />
             <Route
               path={routes.platform.createAsset}
               element={<CreateAsset />}
@@ -81,6 +77,23 @@ export const Router: React.FC = () => {
             <Route
               path={routes.platform.manageAsset}
               element={<ManageAsset />}
+            />
+            <Route
+              path={routes.platform.createIncident}
+              element={<CreateIncident />}
+            />
+            <Route path={routes.platform.incident} element={<Incident />} />
+            <Route
+              path={routes.platform.assetGroups}
+              element={<AssetGroups />}
+            />
+            <Route
+              path={routes.platform.createAssetGroup}
+              element={<CreateAssetGroup />}
+            />
+            <Route
+              path={routes.platform.manageAsset}
+              element={<ManageAssetGroup />}
             />
             <Route path={routes.platform.assets} element={<Assets />} />
             <Route
@@ -100,7 +113,8 @@ export const Router: React.FC = () => {
             />
           </Routes>
         </div>
-        {createAssetGroupModal && <CreateAssetGroup />}
+        {modals.createAssetGroup.isOpen && <CreateAssetGroup />}
+        {modals.inviteUser.isOpen && <InviteUser />}
       </AccountProvider>
     </>
   ) : (

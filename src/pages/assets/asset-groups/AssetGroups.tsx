@@ -18,39 +18,22 @@ export const AssetGroups: React.FC = () => {
   const { requestOptions } = useContext(AxisContext);
   const { selectedAccount } = useContext(AccountContext);
   const navigate = useNavigate();
-  const [assets, setAssets] = useState<AssetGroup[]>([]);
+  const [assetGroups, setAssetGroups] = useState<AssetGroup[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const columns: GridColDef[] = [
-    { field: 'assetId', headerName: 'ID', width: 70 },
-    { field: 'name', headerName: 'Name', minWidth: 200 },
-    { field: 'type', headerName: 'Type', width: 130 },
-    { field: 'operatingSystem', headerName: 'OS', width: 130 },
-    {
-      field: 'status',
-      headerName: 'Status',
-      width: 130,
-    },
-    {
-      field: 'tlp',
-      headerName: 'TLP',
-      width: 100,
-    },
-    { field: 'priority', headerName: 'Priority', width: 100, type: 'number' },
-    {
-      field: 'lastHeartbeat',
-      headerName: 'Last Heartbeat',
-      minWidth: 180,
-    },
+    { field: 'assetGroupId', headerName: 'ID', width: 70 },
+    { field: 'title', headerName: 'Name', minWidth: 200 },
+    { field: 'description', headerName: 'Description', minWidth: 300 },
   ];
 
   useEffect(() => {
     if (selectedAccount?.value) {
       setLoading(true);
       API.assets(requestOptions)
-        .getAssets(selectedAccount?.value)
+        .getAssetGroups(selectedAccount?.value)
         .then((res) => {
-          setAssets(res.data.responseObject || []);
+          setAssetGroups(res.data.responseObject || []);
           setLoading(false);
         })
         .catch((err: any) => {
@@ -63,8 +46,8 @@ export const AssetGroups: React.FC = () => {
   return (
     <div className='flex flex-col w-full'>
       <div className='flex justify-between items-center mb-6'>
-        <h1 className='text-2xl font-bold'>Assets</h1>
-        <Link to={routes.platform.createAsset}>
+        <h1 className='text-2xl font-bold'>Asset groups</h1>
+        <Link to={routes.platform.createAssetGroup}>
           <Button type='button' text='Create Asset' theme='primary' />
         </Link>
       </div>
@@ -73,22 +56,27 @@ export const AssetGroups: React.FC = () => {
         <div className='flex justify-center my-20'>
           <Loader />
         </div>
-      ) : assets.length === 0 ? (
+      ) : assetGroups.length === 0 ? (
         <div className='bg-white rounded-lg shadow p-6 text-center'>
-          <h3 className='text-lg font-medium text-gray-900'>No assets found</h3>
+          <h3 className='text-lg font-medium text-gray-900'>
+            No asset groups found
+          </h3>
           <p className='mt-2 text-gray-500'>
-            Start by adding a new asset to your account.
+            Start by adding a new asset group to your account.
           </p>
         </div>
       ) : (
         <div className='bg-white shadow overflow-hidden sm:rounded-lg'>
           <DataTable
             columns={columns}
-            rows={assets}
+            rows={assetGroups}
             paginationModel={{ page: 0, pageSize: 10 }}
             onClickRow={(asset) => {
               navigate(
-                routes.platform.manageAsset.replace(':id', asset.row.assetId),
+                routes.platform.manageAsset.replace(
+                  ':id',
+                  asset.row.assetGroupId,
+                ),
               );
             }}
           />
