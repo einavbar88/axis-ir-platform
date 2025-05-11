@@ -21,6 +21,7 @@ interface AccountContextType {
   assetGroupOptions: Option[];
   hasAdminAccess: boolean;
   userRoleIdForAccount?: number;
+  accountUsers: Option[];
 }
 
 export const AccountContext = createContext<AccountContextType>(
@@ -41,6 +42,7 @@ export const AccountProvider: React.FC<AccountProviderProps> = ({
   } = useContext(AxisContext);
   const [selectedAccount, setSelectedAccount] = useState<Option>();
   const [accounts, setAccounts] = useState<Option[]>([]);
+  const [accountUsers, setAccountUsers] = useState<Option[]>([]);
   const [assetGroupOptions, setAssetGroupOptions] = useState<any[]>([]);
 
   const [userRoleIdForAccount, setUserRoleIdForAccount] = useState<number>();
@@ -86,6 +88,16 @@ export const AccountProvider: React.FC<AccountProviderProps> = ({
       setUserRoleIdForAccount(roleId);
       setHasAdminAccess([Role.ADMIN, Role.MANAGER].includes(roleId));
     }
+
+    API.users(requestOptions)
+      .getByCompanyId(selectedAccount.value)
+      .then((res) => {
+        const users = res.data.responseObject.map((user: any) => ({
+          label: user.username,
+          value: user.userId,
+        }));
+        setAccountUsers(users);
+      });
   }, [selectedAccount]);
 
   return (
@@ -97,6 +109,7 @@ export const AccountProvider: React.FC<AccountProviderProps> = ({
         accounts,
         userRoleIdForAccount,
         hasAdminAccess,
+        accountUsers,
       }}
     >
       {children}

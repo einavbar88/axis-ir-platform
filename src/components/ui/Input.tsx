@@ -29,7 +29,9 @@ export const Input: React.FC<Props> = ({
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [inputType, setInputType] = useState(type);
-  const [value, setValue] = useState<string>();
+  const [value, setValue] = useState<string>(
+    type === 'text' ? (defaultValue as string) : '',
+  );
 
   useEffect(() => {
     setInputType(showPassword ? 'text' : type);

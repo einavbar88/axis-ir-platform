@@ -22,6 +22,7 @@ import { ManageAssetGroup } from './pages/assets/asset-groups/ManageAssetGroup';
 import { Users } from './pages/users/Users';
 import { CreateIncident } from './pages/incidents/CreateIncident';
 import { Incident } from './pages/incidents/Incident';
+import { Incidents } from './pages/incidents/Incidents';
 
 export const Router: React.FC = () => {
   const { isLoggedIn, isPageLoading, modals } = useContext(AxisContext);
@@ -83,6 +84,7 @@ export const Router: React.FC = () => {
               element={<CreateIncident />}
             />
             <Route path={routes.platform.incident} element={<Incident />} />
+            <Route path={routes.platform.incidents} element={<Incidents />} />
             <Route
               path={routes.platform.assetGroups}
               element={<AssetGroups />}

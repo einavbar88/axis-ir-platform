@@ -29,5 +29,6 @@ export type Incident = {
   title?: string;
   tlp?: string;
   updatedAt?: string;
-  assigned?: string;
+  assigneeName?: string;
+  assignee?: string;
 };

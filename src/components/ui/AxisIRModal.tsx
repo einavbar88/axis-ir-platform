@@ -15,7 +15,10 @@ export const AxisIRModal: React.FC<Props> = ({
 }) => {
   return (
     <div className='bg-main-dark-50 w-screen h-screen z-50 fixed top-0 left-0 flex justify-center items-center'>
-      <div className='bg-main-white w-96 z-100 rounded flex flex-col' ref={ref}>
+      <div
+        className='bg-main-white w-96 z-100 rounded flex flex-col max-h-[600px]'
+        ref={ref}
+      >
         <div className='flex justify-between p-6 bg-main-dark rounded-tl rounded-tr'>
           <h2 className='font-semibold text-lg text-main-white'>{title}</h2>
           <p

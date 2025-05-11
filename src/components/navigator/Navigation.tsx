@@ -8,6 +8,10 @@ export const buttonsConfig = [
     text: 'Dashboards',
   },
   {
+    to: routes.platform.incidents,
+    text: 'Incidents',
+  },
+  {
     to: routes.platform.users,
     text: 'Users',
   },
