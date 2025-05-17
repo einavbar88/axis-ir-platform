@@ -4,13 +4,25 @@ import { AccountContext } from '../store/AccountContext';
 type Props = {
   defaultValue?: string;
   update: (assignee: string) => void;
+  extraClass?: string;
+  ref?: React.RefObject<HTMLSelectElement>;
 };
 
-export const UserSelect: React.FC<Props> = ({ defaultValue, update }) => {
+export const UserSelect: React.FC<Props> = ({
+  defaultValue,
+  update,
+  extraClass,
+  ref,
+}) => {
   const { accountUsers } = useContext(AccountContext);
 
   return (
-    <select value={defaultValue} onChange={(e) => update(e.target.value)}>
+    <select
+      ref={ref}
+      className={'p-2 bg-transparent ' + extraClass}
+      value={defaultValue}
+      onChange={(e) => update(e.target.value)}
+    >
       <option key='null' value={'null'}>
         Select Assignee
       </option>

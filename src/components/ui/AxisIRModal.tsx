@@ -5,6 +5,7 @@ type Props = {
   children: React.ReactNode;
   close: () => void;
   title: string;
+  width?: 'wide' | 'narrow';
 };
 
 export const AxisIRModal: React.FC<Props> = ({
@@ -12,11 +13,12 @@ export const AxisIRModal: React.FC<Props> = ({
   ref,
   close,
   title,
+  width = 'narrow',
 }) => {
   return (
     <div className='bg-main-dark-50 w-screen h-screen z-50 fixed top-0 left-0 flex justify-center items-center'>
       <div
-        className='bg-main-white w-96 z-100 rounded flex flex-col max-h-[600px]'
+        className={`bg-main-white ${width === 'narrow' ? 'w-96' : 'w-5/12'} z-100 rounded flex flex-col max-h-[600px]`}
         ref={ref}
       >
         <div className='flex justify-between p-6 bg-main-dark rounded-tl rounded-tr'>

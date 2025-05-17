@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { AxisContext } from '../../store/AxisContext';
 import { AccountContext } from '../../store/AccountContext';
 import { useNavigate } from 'react-router-dom';
-import type { Incident } from '../assets/types';
+import type { Incident } from './types';
 import { API } from '../../api/API';
 import routes from '../../constants/routes';
 import { Input } from '../../components/ui/Input';

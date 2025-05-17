@@ -23,6 +23,7 @@ import { Users } from './pages/users/Users';
 import { CreateIncident } from './pages/incidents/CreateIncident';
 import { Incident } from './pages/incidents/Incident';
 import { Incidents } from './pages/incidents/Incidents';
+import { Task } from './pages/incidents/Task';
 
 export const Router: React.FC = () => {
   const { isLoggedIn, isPageLoading, modals } = useContext(AxisContext);
@@ -85,6 +86,7 @@ export const Router: React.FC = () => {
             />
             <Route path={routes.platform.incident} element={<Incident />} />
             <Route path={routes.platform.incidents} element={<Incidents />} />
+            <Route path={routes.platform.task} element={<Task />} />
             <Route
               path={routes.platform.assetGroups}
               element={<AssetGroups />}

@@ -9,7 +9,7 @@ import routes from '../../constants/routes';
 import { Button } from '../../components/ui/Button';
 import { Loader } from '../../components/ui/Loader';
 import { DataTable } from '../../components/ui/Table';
-import type { Incident } from '../assets/types';
+import type { Incident } from './types';
 
 export const Incidents: React.FC = () => {
   const { requestOptions } = useContext(AxisContext);

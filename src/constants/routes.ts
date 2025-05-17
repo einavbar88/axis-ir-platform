@@ -16,6 +16,7 @@ const platform = {
   incidents: '/incidents',
   createIncident: '/create-incident',
   incident: '/incident/:id',
+  task: '/task/:id',
   login: '/login',
   register: '/register',
   profile: '/profile',
@@ -53,6 +54,13 @@ const server = {
     getByCompanyId: 'incidents/getByCompanyId',
     getById: 'incidents/getById',
     update: 'incidents/update',
+  },
+  tasks: {
+    create: 'tasks/create',
+    getByIncidentId: 'tasks/getByIncidentId',
+    getAllTasks: 'tasks/getAllTasks',
+    getById: 'tasks/getById',
+    update: 'tasks/update',
   },
 };
 

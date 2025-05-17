@@ -10,6 +10,7 @@ type Props = {
   type?: 'button' | 'submit';
   linkTo?: string;
   disabled?: boolean;
+  size?: 'small' | 'large';
 };
 
 export const Button: React.FC<Props> = ({
@@ -21,23 +22,26 @@ export const Button: React.FC<Props> = ({
   type = 'button',
   linkTo,
   disabled = false,
+  size = 'large',
 }) => {
   const getThemeStyles = () => {
     switch (theme) {
       case 'primary':
-        return 'text-main-light-green flex bg-main-mid p-3 ml-2 rounded-xl mb-2';
+        return 'text-main-light-green flex bg-main-mid ml-2 rounded-xl mb-2';
       case 'secondary':
-        return 'text-main-dark flex bg-main-light-green p-3 ml-2 rounded-xl mb-2';
+        return 'text-main-dark flex bg-main-light-green ml-2 rounded-xl mb-2';
       case 'tertiary':
-        return 'text-main-dark flex p-3 ml-2 mr-2';
+        return 'text-main-dark flex ml-2 mr-2';
       default:
         return '';
     }
   };
 
+  const className = `${getThemeStyles()} ${buttonClasses} ${size === 'small' ? 'p-2 text-sm' : 'p-3'}`;
+
   if (linkTo) {
     return (
-      <Link to={linkTo} className={`${getThemeStyles()} ${buttonClasses}`}>
+      <Link to={linkTo} className={className}>
         <p>{text}</p>
         {icon ? icon() : null}
       </Link>
@@ -48,7 +52,7 @@ export const Button: React.FC<Props> = ({
     <button
       type={type}
       onClick={onClick}
-      className={`${getThemeStyles()} ${buttonClasses}`}
+      className={className}
       disabled={disabled}
     >
       <p>{text}</p>

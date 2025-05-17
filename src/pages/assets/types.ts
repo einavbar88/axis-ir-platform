@@ -16,19 +16,3 @@ export type CreateAssetGroupForm = {
   description: string;
   companyId?: string;
 };
-
-export type Incident = {
-  caseId?: number;
-  closedAt?: string;
-  companyId?: number;
-  created_at?: string;
-  description?: string;
-  openedAt?: string;
-  priority?: number;
-  status?: string;
-  title?: string;
-  tlp?: string;
-  updatedAt?: string;
-  assigneeName?: string;
-  assignee?: string;
-};

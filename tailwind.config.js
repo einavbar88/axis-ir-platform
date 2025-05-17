@@ -15,6 +15,7 @@ module.exports = {
       'main-white': '#faffff',
       error: '#b60000',
       white: 'white',
+      transparent: 'transparent',
     },
     fontFamily: {
       poppins: ['Poppins', 'sans-serif'],

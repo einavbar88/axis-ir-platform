@@ -1,5 +1,5 @@
 import axios, { type AxiosRequestConfig } from 'axios';
-import type { Incident } from '../pages/assets/types';
+import type { Incident } from '../pages/incidents/types';
 import routes from '../constants/routes';
 
 const incidents = (config: AxiosRequestConfig) => ({

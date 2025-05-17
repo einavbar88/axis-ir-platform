@@ -22,6 +22,7 @@ interface AccountContextType {
   hasAdminAccess: boolean;
   userRoleIdForAccount?: number;
   accountUsers: Option[];
+  assetsOptions: Option[];
 }
 
 export const AccountContext = createContext<AccountContextType>(
@@ -44,7 +45,7 @@ export const AccountProvider: React.FC<AccountProviderProps> = ({
   const [accounts, setAccounts] = useState<Option[]>([]);
   const [accountUsers, setAccountUsers] = useState<Option[]>([]);
   const [assetGroupOptions, setAssetGroupOptions] = useState<any[]>([]);
-
+  const [assetsOptions, setAssetsOptions] = useState<any[]>([]);
   const [userRoleIdForAccount, setUserRoleIdForAccount] = useState<number>();
   const [hasAdminAccess, setHasAdminAccess] = useState<boolean>(false);
 
@@ -81,6 +82,18 @@ export const AccountProvider: React.FC<AccountProviderProps> = ({
       )
       .catch((e) => console.log(e));
 
+    API.assets(requestOptions)
+      .getAssets(selectedAccount?.value)
+      .then((res) =>
+        setAssetsOptions(
+          res.data?.responseObject?.map((asset: any) => ({
+            value: asset.assetId,
+            label: asset.name,
+          })) || [],
+        ),
+      )
+      .catch((e) => console.log(e));
+
     const roleId = user?.roles.find(
       (role) => Number(selectedAccount?.value) === role.companyId,
     )?.roleId;
@@ -110,6 +123,7 @@ export const AccountProvider: React.FC<AccountProviderProps> = ({
         userRoleIdForAccount,
         hasAdminAccess,
         accountUsers,
+        assetsOptions,
       }}
     >
       {children}
