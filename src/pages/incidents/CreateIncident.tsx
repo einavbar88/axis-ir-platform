@@ -9,6 +9,7 @@ import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import { incidentStatusOptions, tlpOptions } from '../../constants/common';
 import { RichTextEditor } from '../../components/ui/rich-text-editor';
+import { priorities } from '../../constants/common';
 
 export const CreateIncident: React.FC = () => {
   const { requestOptions } = useContext(AxisContext);
@@ -20,7 +21,7 @@ export const CreateIncident: React.FC = () => {
     description: '',
     status: '',
     tlp: '',
-    priority: 0,
+    priority: 1,
   });
 
   const onChangeField = (e: {
@@ -105,23 +106,21 @@ export const CreateIncident: React.FC = () => {
                 <option value=''>Select Status</option>
                 {incidentStatusOptions.map((status) => (
                   <option key={status} value={status}>
-                    {status.charAt(0).toUpperCase() + status.slice(1)}
+                    {status.charAt(0) + status.slice(1).toLowerCase()}
                   </option>
                 ))}
               </select>
             </div>
             <div className='w-full'>
-              <Input
-                name='priority'
-                label='Priority (1-5)'
-                type='number'
-                onChange={onChangeField}
-                inputClasses={'min-w-52'}
-                min={1}
-                max={5}
-              />
+              <strong>Priority</strong>
+              <select name={'priority'} onChange={onChangeField}>
+                {priorities.map((priority, i) => (
+                  <option key={priority} value={i + 1}>
+                    {priority}
+                  </option>
+                ))}
+              </select>
             </div>
-
             <div className='w-full'>
               <p className='block text-sm font-medium text-gray-700'>
                 Traffic Light Protocol (TLP)

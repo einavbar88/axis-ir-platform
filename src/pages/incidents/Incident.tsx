@@ -13,6 +13,7 @@ import { DescriptionEditModal } from './modals/DescriptionEditModal';
 import { AddTaskModal } from './modals/AddTaskModal';
 import { AccountContext } from '../../store/AccountContext';
 import routes from '../../constants/routes';
+import { priorities } from '../../constants/common';
 
 export const Incident: React.FC = () => {
   const { requestOptions } = useContext(AxisContext);
@@ -91,7 +92,8 @@ export const Incident: React.FC = () => {
             .map(Number),
         }));
         setTasks(tasks);
-      });
+      })
+      .catch((e) => {});
   };
 
   useEffect(() => {
@@ -184,9 +186,9 @@ export const Incident: React.FC = () => {
                     updateIncident({ status: e.target.value }, 'status')
                   }
                 >
-                  {incidentStatusOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
+                  {incidentStatusOptions.map((status) => (
+                    <option key={status} value={status}>
+                      {status.charAt(0) + status.slice(1).toLowerCase()}
                     </option>
                   ))}
                 </select>
@@ -204,9 +206,9 @@ export const Incident: React.FC = () => {
                 updateIncident({ priority: Number(e.target.value) }, 'priority')
               }
             >
-              {[1, 2, 3, 4, 5].map((p) => (
-                <option key={p} value={p}>
-                  {p}
+              {priorities.map((priority, i) => (
+                <option key={priority} value={i + 1}>
+                  {priority}
                 </option>
               ))}
             </select>
@@ -294,7 +296,10 @@ export const Incident: React.FC = () => {
                             )?.label
                           : '+ Assign'}
                       </span>
-                      <span className='cursor-pointer'>{task.status}</span>
+                      <span className='cursor-pointer'>
+                        {task.status.charAt(0) +
+                          task.status.slice(1).toLowerCase()}
+                      </span>
                     </div>
                   </td>
                 </tr>

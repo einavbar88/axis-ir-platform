@@ -7,8 +7,11 @@ const incidents = (config: AxiosRequestConfig) => ({
     axios.post(routes.api.incidents.create, { ...createForm }, config),
   update: async (createForm: Incident) =>
     axios.post(routes.api.incidents.update, { ...createForm }, config),
-  getIncidents: async (companyId: string) =>
-    axios.get(`${routes.api.incidents.getByCompanyId}/${companyId}`, config),
+  getIncidents: async (companyId: string, timeFrame: string) =>
+    axios.get(
+      `${routes.api.incidents.getByCompanyId}/${companyId}?timeFrame=${timeFrame}`,
+      config,
+    ),
   getById: async (id: number) =>
     axios.get(`${routes.api.incidents.getById}/${id}`, config),
 });

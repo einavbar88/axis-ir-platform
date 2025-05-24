@@ -8,7 +8,12 @@ import { API } from '../../api/API';
 import routes from '../../constants/routes';
 import type { CreateAssetForm } from './types';
 import Select from 'react-select';
-import { tlpOptions } from '../../constants/common';
+import {
+  tlpOptions,
+  priorities,
+  osOptions,
+  assetStatusOptions,
+} from '../../constants/common';
 
 export const CreateAsset: React.FC = () => {
   const { requestOptions } = useContext(AxisContext);
@@ -21,7 +26,7 @@ export const CreateAsset: React.FC = () => {
     operatingSystem: '',
     status: '',
     tlp: '',
-    priority: 0,
+    priority: 1,
     assetGroupId: undefined,
   });
 
@@ -59,11 +64,6 @@ export const CreateAsset: React.FC = () => {
       });
   };
 
-  // Status options
-  const statusOptions = ['active', 'inactive', 'maintenance', 'decommissioned'];
-  // Operating system options
-  const osOptions = ['Windows', 'macOS', 'Linux', 'iOS', 'Android', 'Other'];
-
   return (
     <div className='w-full flex flex-col justify-center items-center'>
       <h1 className='text-2xl font-bold my-5'>Create New Asset</h1>
@@ -96,12 +96,14 @@ export const CreateAsset: React.FC = () => {
                 onChange={onChangeField}
                 className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
               >
-                <option value=''>Select Asset Type</option>
-                <option value='Server'>Server</option>
-                <option value='Workstation'>Workstation</option>
-                <option value='Mobile'>Mobile Device</option>
-                <option value='IoT'>IoT Device</option>
-                <option value='Network'>Network Device</option>
+                <option value='ENDPOINT'>Endpoint</option>
+                <option value='SERVER'>Server</option>
+                <option value='DATABASE'>Database</option>
+                <option value='STORAGE'>Storage</option>
+                <option value='CONTAINER'>Container</option>
+                <option value='VM'>VM</option>
+                <option value='NETWORK'>Network Device</option>
+                <option value='OTHER'>Other</option>
               </select>
             </div>
 
@@ -133,7 +135,7 @@ export const CreateAsset: React.FC = () => {
                 className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
               >
                 <option value=''>Select Status</option>
-                {statusOptions.map((status) => (
+                {assetStatusOptions.map((status) => (
                   <option key={status} value={status}>
                     {status.charAt(0).toUpperCase() + status.slice(1)}
                   </option>
@@ -141,15 +143,14 @@ export const CreateAsset: React.FC = () => {
               </select>
             </div>
             <div className='w-full'>
-              <Input
-                name='priority'
-                label='Priority (1-5)'
-                type='number'
-                onChange={onChangeField}
-                inputClasses={'min-w-52'}
-                min={1}
-                max={5}
-              />
+              <strong>Priority</strong>
+              <select name={'priority'} onChange={onChangeField}>
+                {priorities.map((priority, i) => (
+                  <option key={priority} value={i + 1}>
+                    {priority}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className='w-full'>

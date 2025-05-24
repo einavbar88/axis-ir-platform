@@ -10,6 +10,7 @@ import { Button } from '../../components/ui/Button';
 import { Loader } from '../../components/ui/Loader';
 import { DataTable } from '../../components/ui/Table';
 import type { Incident } from './types';
+import { timeFrames } from '../../constants/common';
 
 export const Incidents: React.FC = () => {
   const { requestOptions } = useContext(AxisContext);
@@ -17,6 +18,7 @@ export const Incidents: React.FC = () => {
   const navigate = useNavigate();
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [timeFrame, setTimeFrame] = useState<string>('all time');
 
   const columns: GridColDef[] = [
     { field: 'caseId', headerName: 'Case ID', width: 70 },
@@ -43,7 +45,7 @@ export const Incidents: React.FC = () => {
     if (selectedAccount?.value) {
       setLoading(true);
       API.incidents(requestOptions)
-        .getIncidents(selectedAccount?.value)
+        .getIncidents(selectedAccount?.value, timeFrame)
         .then((res) => {
           setIncidents(res.data.responseObject);
           setLoading(false);

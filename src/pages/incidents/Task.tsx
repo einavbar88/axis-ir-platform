@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import { API } from '../../api/API';
 import { AxisContext } from '../../store/AxisContext';
-import { AccountContext } from '../../store/AccountContext';
 import { useIsClickOutside } from '../../hooks/useIsClickOutside';
 import { Button } from '../../components/ui/Button';
 import { UserSelect } from '../../components/UserSelect';
@@ -11,10 +10,10 @@ import { TitleEditModal } from './modals/TitleEditModal';
 import { DescriptionEditModal } from './modals/DescriptionEditModal';
 import routes from '../../constants/routes';
 import type { Task as TaskType } from './types';
+import { incidentStatusOptions, priorities } from '../../constants/common';
 
 export const Task: React.FC = () => {
   const { requestOptions } = useContext(AxisContext);
-  const { accountUsers } = useContext(AccountContext);
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -160,9 +159,9 @@ export const Task: React.FC = () => {
                     updateTask({ status: e.target.value }, 'status')
                   }
                 >
-                  {['New', 'In Progress', 'Completed'].map((option) => (
-                    <option key={option} value={option}>
-                      {option}
+                  {incidentStatusOptions.map((status) => (
+                    <option key={status} value={status}>
+                      {status.charAt(0) + status.slice(1).toLowerCase()}
                     </option>
                   ))}
                 </select>
@@ -180,9 +179,9 @@ export const Task: React.FC = () => {
                 updateTask({ priority: Number(e.target.value) }, 'priority')
               }
             >
-              {[1, 2, 3, 4, 5].map((p) => (
-                <option key={p} value={p}>
-                  {p}
+              {priorities.map((priority, i) => (
+                <option key={priority} value={i + 1}>
+                  {priority}
                 </option>
               ))}
             </select>

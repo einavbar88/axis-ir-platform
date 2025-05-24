@@ -100,12 +100,7 @@ export const Login: React.FC = () => {
       >
         <div className='absolute w-full top-16 text-center'>
           <div className='w-full flex justify-center mb-4'>
-            <img
-              className={'rounded-xl'}
-              style={{ width: '180px' }}
-              src={routes.assets.logo}
-              alt={'AxisIR'}
-            />
+            <img src={routes.assets.logo} alt={'AxisIR'} />
           </div>
           <p className='text-xl'>Smarter Response, Stronger Defense!</p>
         </div>

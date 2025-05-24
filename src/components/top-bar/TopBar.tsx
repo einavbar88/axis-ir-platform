@@ -13,12 +13,7 @@ export const TopBar = () => {
     >
       <div className='flex pl-8 py-2 w-60'>
         <Link to={routes.platform.home}>
-          <img
-            className={'rounded-3xl'}
-            style={{ width: '100px' }}
-            src={routes.assets.logo}
-            alt={'AxisIR'}
-          />
+          <img src={routes.assets.logo} alt={'AxisIR'} />
         </Link>
       </div>
       <div className={'flex align-middle justify-between w-full'}>

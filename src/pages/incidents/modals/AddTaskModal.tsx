@@ -8,7 +8,7 @@ import { AxisContext } from '../../../store/AxisContext';
 import { AccountContext } from '../../../store/AccountContext';
 import { UserSelect } from '../../../components/UserSelect';
 import { API } from '../../../api/API';
-import { incidentStatusOptions } from '../../../constants/common';
+import { incidentStatusOptions, priorities } from '../../../constants/common';
 
 export const AddTaskModal: React.FC<
   EditModalProps & { chosenTask?: React.RefObject<Task> }
@@ -23,7 +23,7 @@ export const AddTaskModal: React.FC<
       : {
           title: '',
           description: '',
-          status: 'To do',
+          status: 'NEW',
           assignee: undefined,
           caseId: Number(value),
           assetId: [],
@@ -116,9 +116,9 @@ export const AddTaskModal: React.FC<
             defaultValue={formData?.status}
             onChange={handleChange}
           >
-            {incidentStatusOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
+            {incidentStatusOptions.map((status) => (
+              <option key={status} value={status}>
+                {status.charAt(0) + status.slice(1).toLowerCase()}
               </option>
             ))}
           </select>
@@ -132,9 +132,9 @@ export const AddTaskModal: React.FC<
             className='mt-1 p-2 w-full border rounded'
           >
             <option value=''>Select priority</option>
-            {[1, 2, 3, 4, 5].map((p) => (
-              <option key={p} value={p}>
-                {p}
+            {priorities.map((priority, i) => (
+              <option key={priority} value={i + 1}>
+                {priority}
               </option>
             ))}
           </select>

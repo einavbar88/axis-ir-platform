@@ -9,6 +9,7 @@ export interface CreateAssetForm {
   assetGroupId?: string;
   companyId?: string;
   createdAt?: string;
+  assetId?: string;
 }
 
 export type CreateAssetGroupForm = {

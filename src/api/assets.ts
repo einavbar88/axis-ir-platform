@@ -28,6 +28,11 @@ const assets = (config: AxiosRequestConfig) => ({
       { assetGroupId, assetId, isRemove },
       config,
     ),
+  getInfectedAssets: async (companyId: string, timeFrame: string) =>
+    axios.get(
+      `${routes.api.assets.getInfectedAssets}/${companyId}?timeFrame=${timeFrame}`,
+      config,
+    ),
 });
 
 export default assets;

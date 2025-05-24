@@ -48,6 +48,7 @@ const server = {
     getAssetsByCompanyId: 'assets/getAssetsByCompanyId',
     getById: 'assets/getById',
     getAssetGroups: 'assets/getAssetGroups',
+    getInfectedAssets: 'assets/getInfectedAssets',
   },
   incidents: {
     create: 'incidents/create',

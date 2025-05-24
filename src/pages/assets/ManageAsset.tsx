@@ -8,7 +8,12 @@ import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import type { CreateAssetForm } from './types';
 import Select from 'react-select';
-import { tlpOptions } from '../../constants/common';
+import {
+  tlpOptions,
+  priorities,
+  osOptions,
+  assetStatusOptions,
+} from '../../constants/common';
 
 export const ManageAsset: React.FC = () => {
   const { requestOptions } = useContext(AxisContext);
@@ -16,12 +21,13 @@ export const ManageAsset: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [assetData, setAssetData] = useState<CreateAssetForm>({
+    assetId: '',
     name: '',
     type: '',
     operatingSystem: '',
     status: '',
     tlp: '',
-    priority: 0,
+    priority: 1,
     assetGroupId: undefined,
   });
   const [isLoading, setIsLoading] = useState(true);
@@ -33,7 +39,26 @@ export const ManageAsset: React.FC = () => {
     API.assets(requestOptions)
       .getById(Number(id))
       .then((res) => {
-        setAssetData(res.data.responseObject);
+        const {
+          assetId,
+          name,
+          type,
+          operatingSystem,
+          status,
+          tlp,
+          priority,
+          assetGroupId,
+        } = res.data.responseObject as CreateAssetForm;
+        setAssetData({
+          assetId,
+          name,
+          type,
+          operatingSystem,
+          status,
+          tlp,
+          priority,
+          assetGroupId,
+        });
         setIsLoading(false);
       })
       .catch((e) => {
@@ -54,6 +79,7 @@ export const ManageAsset: React.FC = () => {
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log();
     API.assets(requestOptions)
       .update(assetData)
       .then(() => {
@@ -64,10 +90,9 @@ export const ManageAsset: React.FC = () => {
       });
   };
 
-  // Status options
-  const statusOptions = ['active', 'inactive', 'maintenance', 'decommissioned'];
-  // Operating system options
-  const osOptions = ['Windows', 'macOS', 'Linux', 'iOS', 'Android', 'Other'];
+  useEffect(() => {
+    console.log(assetData.assetGroupId);
+  }, [assetData]);
 
   if (isLoading) {
     return (
@@ -113,12 +138,14 @@ export const ManageAsset: React.FC = () => {
                 onChange={onChangeField}
                 className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
               >
-                <option value=''>Select Asset Type</option>
-                <option value='Server'>Server</option>
-                <option value='Workstation'>Workstation</option>
-                <option value='Mobile'>Mobile Device</option>
-                <option value='IoT'>IoT Device</option>
-                <option value='Network'>Network Device</option>
+                <option value='ENDPOINT'>Endpoint</option>
+                <option value='SERVER'>Server</option>
+                <option value='DATABASE'>Database</option>
+                <option value='STORAGE'>Storage</option>
+                <option value='CONTAINER'>Container</option>
+                <option value='VM'>VM</option>
+                <option value='NETWORK'>Network Device</option>
+                <option value='OTHER'>Other</option>
               </select>
             </div>
 
@@ -152,7 +179,7 @@ export const ManageAsset: React.FC = () => {
                 className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
               >
                 <option value=''>Select Status</option>
-                {statusOptions.map((status) => (
+                {assetStatusOptions.map((status) => (
                   <option key={status} value={status}>
                     {status.charAt(0).toUpperCase() + status.slice(1)}
                   </option>
@@ -161,16 +188,18 @@ export const ManageAsset: React.FC = () => {
             </div>
 
             <div className='w-full'>
-              <Input
-                name='priority'
-                label='Priority (1-5)'
-                type='number'
+              <strong>Priority</strong>
+              <select
+                value={assetData.priority}
+                name={'priority'}
                 onChange={onChangeField}
-                defaultValue={assetData.priority || ''}
-                inputClasses={'min-w-52'}
-                min={1}
-                max={5}
-              />
+              >
+                {priorities.map((priority, i) => (
+                  <option key={priority} value={i + 1}>
+                    {priority}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className='w-full'>
@@ -202,20 +231,23 @@ export const ManageAsset: React.FC = () => {
                 isMulti
                 name='assetGroupId'
                 options={assetGroupOptions}
-                value={JSON.parse(assetData.assetGroupId ?? '[]').map(
-                  (groupId: number) =>
-                    assetGroupOptions.find(
-                      (group) => Number(group.value) === groupId,
-                    ),
+                value={(typeof assetData.assetGroupId === 'string'
+                  ? JSON.parse(assetData.assetGroupId ?? '[]')
+                  : (assetData.assetGroupId ?? [])
+                ).map((groupId: number) =>
+                  assetGroupOptions.find(
+                    (group) => Number(group.value) === groupId,
+                  ),
                 )}
-                onChange={(newValue) =>
+                onChange={(newValue) => {
+                  console.log(newValue);
                   onChangeField({
                     target: {
                       name: 'assetGroupId',
-                      value: newValue.map((v) => v.value),
+                      value: newValue?.map((v) => v.value),
                     },
-                  })
-                }
+                  });
+                }}
               />
             </div>
 
