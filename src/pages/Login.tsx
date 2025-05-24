@@ -100,7 +100,7 @@ export const Login: React.FC = () => {
       >
         <div className='absolute w-full top-16 text-center'>
           <div className='w-full flex justify-center mb-4'>
-            <img src={routes.assets.logo} alt={'AxisIR'} />
+            <img src={routes.assets.logo} alt={'AxisIR'} className='w-[30%]' />
           </div>
           <p className='text-xl'>Smarter Response, Stronger Defense!</p>
         </div>
@@ -122,7 +122,7 @@ export const Login: React.FC = () => {
             )}
             <button
               type='submit'
-              className='w-full flex justify-center py-2 px-4 border border-transparent
+              className='w-full flex justify-center py-2 px-4 border
               rounded-md shadow-sm text-sm font-medium bg-indigo-600 hover:bg-indigo-700
               focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 hover:bg-main-darkest hover:text-main-light-green'
             >

@@ -16,6 +16,10 @@ module.exports = {
       error: '#b60000',
       white: 'white',
       transparent: 'transparent',
+      green: 'green',
+      red: 'red',
+      amber: 'orange',
+      'gray-800': '#424242e5',
     },
     fontFamily: {
       poppins: ['Poppins', 'sans-serif'],
