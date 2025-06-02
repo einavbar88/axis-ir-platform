@@ -9,17 +9,24 @@ import routes from '../../../constants/routes';
 import type { CreateAssetGroupForm } from '../types';
 import { AxisIRModal } from '../../../components/ui/AxisIRModal';
 
-export const CreateAssetGroup: React.FC = () => {
+type Props = {
+  assetGroup?: CreateAssetGroupForm;
+  onClose?: () => void;
+};
+
+export const CreateAssetGroup: React.FC<Props> = ({ assetGroup, onClose }) => {
   const { requestOptions, modals } = useContext(AxisContext);
   const { selectedAccount } = useContext(AccountContext);
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [assetGroupData, setAssetGroupData] = useState<CreateAssetGroupForm>({
-    title: '',
-    description: '',
-    companyId: selectedAccount?.value,
-  });
+  const [assetGroupData, setAssetGroupData] = useState<CreateAssetGroupForm>(
+    assetGroup || {
+      title: '',
+      description: '',
+      companyId: selectedAccount?.value,
+    },
+  );
 
   const onChangeField = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -29,6 +36,7 @@ export const CreateAssetGroup: React.FC = () => {
   };
 
   const close = () => {
+    if (onClose) return onClose();
     modals.createAssetGroup.setIsOpen(false);
     navigate(location.pathname);
   };
@@ -49,13 +57,9 @@ export const CreateAssetGroup: React.FC = () => {
     API.assets(requestOptions)
       .createAssetGroup(payload)
       .then((res) => {
+        if (onClose) return onClose();
         modals.createAssetGroup.setIsOpen(false);
-        navigate(
-          routes.platform.manageAssetGroup.replace(
-            ':id',
-            res.data.responseObject.assetGroupId,
-          ),
-        );
+        navigate(routes.platform.assetGroups);
       })
       .catch((err) => {
         console.error('Error creating asset:', err);
@@ -64,7 +68,7 @@ export const CreateAssetGroup: React.FC = () => {
 
   return (
     <AxisIRModal
-      title='Create Asset Group'
+      title={(assetGroup ? 'Manage' : 'Create') + 'Asset Group'}
       ref={modals.createAssetGroup.ref}
       close={close}
     >
@@ -92,7 +96,11 @@ export const CreateAssetGroup: React.FC = () => {
             theme='tertiary'
             type='button'
           />
-          <Button text='Create' theme='primary' type='submit' />
+          <Button
+            text={assetGroup ? 'Save' : 'Create'}
+            theme='primary'
+            type='submit'
+          />
         </div>
       </form>
     </AxisIRModal>

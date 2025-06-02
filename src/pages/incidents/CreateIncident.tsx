@@ -65,7 +65,9 @@ export const CreateIncident: React.FC = () => {
 
   return (
     <div className='w-full flex flex-col justify-center items-center'>
-      <h1 className='text-2xl font-bold my-5'>Create New Incident</h1>
+      <h1 className='text-2xl font-bold my-5 text-main-darkest'>
+        Create New Incident
+      </h1>
       <div className='w-full flex justify-around'>
         <div className='w-1/2'>
           <img alt={'New Asset'} src={routes.assets.incident} />
@@ -85,7 +87,7 @@ export const CreateIncident: React.FC = () => {
               />
             </div>
             <div className='w-full'>
-              <p className='block text-sm font-medium text-gray-700'>
+              <p className='block text-sm font-medium text-gray-800'>
                 Description
               </p>
               <RichTextEditor
@@ -96,7 +98,7 @@ export const CreateIncident: React.FC = () => {
             </div>
 
             <div className='w-full'>
-              <p className='block text-sm font-medium text-gray-700'>Status</p>
+              <p className='block text-sm font-medium text-gray-800'>Status</p>
               <select
                 required
                 name='status'
@@ -122,7 +124,7 @@ export const CreateIncident: React.FC = () => {
               </select>
             </div>
             <div className='w-full'>
-              <p className='block text-sm font-medium text-gray-700'>
+              <p className='block text-sm font-medium text-gray-800'>
                 Traffic Light Protocol (TLP)
               </p>
               <select
@@ -134,7 +136,7 @@ export const CreateIncident: React.FC = () => {
                 <option value=''>Select TLP</option>
                 {tlpOptions.map((tlp) => (
                   <option key={tlp} value={tlp}>
-                    {tlp.charAt(0).toUpperCase() + tlp.slice(1)}
+                    {tlp.charAt(0) + tlp.slice(1).toLowerCase()}
                   </option>
                 ))}
               </select>

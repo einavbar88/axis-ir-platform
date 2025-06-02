@@ -18,12 +18,13 @@ import { InviteUser } from './pages/users/InviteUser';
 import { EditAccount } from './pages/account/EditAccount';
 import { CreateAssetGroup } from './pages/assets/asset-groups/CreateAssetGroup';
 import { AssetGroups } from './pages/assets/asset-groups/AssetGroups';
-import { ManageAssetGroup } from './pages/assets/asset-groups/ManageAssetGroup';
 import { Users } from './pages/users/Users';
 import { CreateIncident } from './pages/incidents/CreateIncident';
 import { Incident } from './pages/incidents/Incident';
 import { Incidents } from './pages/incidents/Incidents';
 import { Task } from './pages/incidents/Task';
+import { AssetPage } from './pages/assets/AssetPage';
+import { AssetGroup } from './pages/assets/asset-groups/AssetGroup';
 
 export const Router: React.FC = () => {
   const { isLoggedIn, isPageLoading, modals } = useContext(AxisContext);
@@ -76,6 +77,7 @@ export const Router: React.FC = () => {
               path={routes.platform.createAsset}
               element={<CreateAsset />}
             />
+            <Route path={routes.platform.assetPage} element={<AssetPage />} />
             <Route
               path={routes.platform.manageAsset}
               element={<ManageAsset />}
@@ -96,8 +98,8 @@ export const Router: React.FC = () => {
               element={<CreateAssetGroup />}
             />
             <Route
-              path={routes.platform.manageAsset}
-              element={<ManageAssetGroup />}
+              path={routes.platform.assetGroupPage}
+              element={<AssetGroup />}
             />
             <Route path={routes.platform.assets} element={<Assets />} />
             <Route

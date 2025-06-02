@@ -14,8 +14,7 @@ export const AddTaskModal: React.FC<
   EditModalProps & { chosenTask?: React.RefObject<Task> }
 > = ({ ref, value, onSave, close, chosenTask }) => {
   const { requestOptions } = useContext(AxisContext);
-  const { assetsOptions, assetGroupOptions, accountUsers } =
-    useContext(AccountContext);
+  const { assetsOptions, assetGroupOptions } = useContext(AccountContext);
 
   const [formData, setFormData] = useState<Task>(
     chosenTask?.current

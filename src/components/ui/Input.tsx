@@ -30,7 +30,7 @@ export const Input: React.FC<Props> = ({
   const [showPassword, setShowPassword] = useState(false);
   const [inputType, setInputType] = useState(type);
   const [value, setValue] = useState<string>(
-    type === 'text' ? (defaultValue as string) : '',
+    type === 'text' || type === 'email' ? (defaultValue as string) : '',
   );
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export const Input: React.FC<Props> = ({
     <div>
       {label && (
         <p
-          className={`block text-sm font-medium text-gray-700 ${labelClasses}`}
+          className={`block text-sm font-medium text-gray-800 ${labelClasses}`}
         >
           {label}
         </p>

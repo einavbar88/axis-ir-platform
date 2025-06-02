@@ -128,7 +128,7 @@ export const Task: React.FC = () => {
             )
           }
         />
-        <h1 className='text-3xl font-bold text-center'>
+        <h1 className='text-3xl font-bold text-center text-main-darkest'>
           <span>Task #{task?.taskId} - </span>
           <span
             className='cursor-pointer underline'

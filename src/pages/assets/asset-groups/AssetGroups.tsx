@@ -46,7 +46,7 @@ export const AssetGroups: React.FC = () => {
   return (
     <div className='flex flex-col w-full'>
       <div className='flex justify-between items-center mb-6'>
-        <h1 className='text-2xl font-bold'>Asset groups</h1>
+        <h1 className='text-2xl font-bold text-main-darkest'>Asset groups</h1>
         <Link to={routes.platform.createAssetGroup}>
           <Button type='button' text='Create Asset' theme='primary' />
         </Link>
@@ -73,7 +73,7 @@ export const AssetGroups: React.FC = () => {
             paginationModel={{ page: 0, pageSize: 10 }}
             onClickRow={(asset) => {
               navigate(
-                routes.platform.manageAsset.replace(
+                routes.platform.assetGroupPage.replace(
                   ':id',
                   asset.row.assetGroupId,
                 ),

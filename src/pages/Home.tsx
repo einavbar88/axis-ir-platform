@@ -14,7 +14,8 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { chartsBgColors, timeFrames } from '../constants/common';
+import { chartsBgColors } from '../constants/common';
+import { TimeFrameSelector } from '../components/ui/TimeFrameSelector';
 
 ChartJS.register(
   CategoryScale,
@@ -31,6 +32,7 @@ export const Home: React.FC = () => {
 
   const [incidents, setIncidents] = useState<any>();
   const [tasks, setTasks] = useState<any>();
+  const [ioc, setIoc] = useState<any>();
   const [infectedAssets, setInfectedAssets] = useState<any>();
   const [timeScale, setTimeScale] = useState<string>('day');
   const [timeFrame, setTimeFrame] = useState<string>('last month');
@@ -39,6 +41,7 @@ export const Home: React.FC = () => {
     if (!selectedAccount?.value) return;
     let incidentsFromDb = [];
     let tasksFromDb = [];
+    let iocFromDb = [];
     let infectedAssetsFromDb = [];
 
     try {
@@ -49,8 +52,8 @@ export const Home: React.FC = () => {
       incidentsFromDb = incidentsResults.data.responseObject;
     } catch (e) {}
 
-    const incidentCountsByMonth = groupByTimeScale(incidentsFromDb, 'openedAt');
-    setIncidents(prepareChartData(incidentCountsByMonth, 'Incidents', 1));
+    const incidentCountsByTime = groupByTimeScale(incidentsFromDb, 'openedAt');
+    setIncidents(prepareChartData(incidentCountsByTime, 'Incidents', 0));
 
     try {
       const tasksResults = await API.tasks(requestOptions).getAllTasks(
@@ -59,22 +62,37 @@ export const Home: React.FC = () => {
       tasksFromDb = tasksResults.data.responseObject;
     } catch (e) {}
 
-    const taskCountsByMonth = groupByTimeScale(tasksFromDb, 'createdAt');
-    setTasks(prepareChartData(taskCountsByMonth, 'Tasks', 2));
+    const taskCountsByTime = groupByTimeScale(tasksFromDb, 'createdAt');
+    setTasks(prepareChartData(taskCountsByTime, 'Tasks', 1));
 
     try {
-      const assetsResults = await API.assets(requestOptions).getInfectedAssets(
-        selectedAccount.value,
+      const assetsResults = await API.incidents(requestOptions).getIoc(
+        incidentsFromDb.map((incident: Incident) => incident.caseId),
         timeFrame,
       );
-      infectedAssetsFromDb = assetsResults.data.responseObject;
+      iocFromDb = assetsResults.data.responseObject;
+      infectedAssetsFromDb = iocFromDb.reduce((acc: any[], curr: any) => {
+        const exists = acc.some((item) => item.assetId === curr.assetId);
+        if (!exists) acc.push(curr);
+        return acc;
+      }, []);
     } catch (e) {}
+
+    const iocCountByTime = groupByTimeScale(iocFromDb, 'createdAt');
+    const assetsCountByTime = groupByTimeScale(
+      infectedAssetsFromDb,
+      'createdAt',
+    );
+    setIoc(prepareChartData(iocCountByTime, 'IOC', 2));
+    setInfectedAssets(
+      prepareChartData(assetsCountByTime, 'Infected Assets', 3),
+    );
   };
 
   const groupByTimeScale = (data: any[], dateField: string) => {
     const timeCounts: { [key: string]: number } = {};
 
-    data.forEach((item) => {
+    data?.forEach((item) => {
       const date = new Date(item[dateField]);
       let key = '';
 
@@ -148,27 +166,17 @@ export const Home: React.FC = () => {
           ))}
         </select>
         <h5 className='mr-2'>Time frame: </h5>
-        <select
-          className='bg-main-lightest p-2 rounded'
-          value={timeFrame}
-          onChange={(e) => setTimeFrame(e.target.value)}
-        >
-          {timeFrames.map((frame) => (
-            <option key={frame} value={frame}>
-              {frame.charAt(0).toUpperCase() + frame.slice(1)}
-            </option>
-          ))}
-        </select>
+        <TimeFrameSelector timeFrame={timeFrame} setTimeFrame={setTimeFrame} />
       </div>
-      <div className='flex justify-center'>
+      <div className='grid grid-cols-2 gap-20'>
         {incidents ? (
-          <div className='h-[300px] mr-8'>
+          <div className='w-[100%]'>
             <Bar
               data={incidents}
               options={{
                 responsive: true,
                 plugins: {
-                  legend: { position: 'top' },
+                  legend: { display: false },
                   title: { display: true, text: 'New incidents' },
                 },
               }}
@@ -178,13 +186,13 @@ export const Home: React.FC = () => {
           <div>No data!</div>
         )}
         {tasks ? (
-          <div className='h-[300px] mr-8'>
+          <div className='w-[100%]'>
             <Bar
               data={tasks}
               options={{
                 responsive: true,
                 plugins: {
-                  legend: { position: 'top' },
+                  legend: { display: false },
                   title: { display: true, text: 'New tasks' },
                 },
               }}
@@ -193,15 +201,31 @@ export const Home: React.FC = () => {
         ) : (
           <div>No data!</div>
         )}
+        {ioc ? (
+          <div className='w-[100%] mr-8'>
+            <Bar
+              data={ioc}
+              options={{
+                responsive: true,
+                plugins: {
+                  legend: { display: false },
+                  title: { display: true, text: 'IOCs' },
+                },
+              }}
+            />
+          </div>
+        ) : (
+          <div>No data!</div>
+        )}
         {infectedAssets ? (
-          <div className='h-[300px] mr-8'>
+          <div className='w-[100%] mr-8'>
             <Bar
               data={infectedAssets}
               options={{
                 responsive: true,
                 plugins: {
-                  legend: { position: 'top' },
-                  title: { display: true, text: 'Infected assets' },
+                  legend: { display: false },
+                  title: { display: true, text: 'Infected Assets' },
                 },
               }}
             />

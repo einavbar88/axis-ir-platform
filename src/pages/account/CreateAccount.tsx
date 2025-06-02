@@ -63,7 +63,9 @@ export const CreateAccount: React.FC = () => {
 
   return (
     <div className='w-full flex flex-col justify-center items-center'>
-      <h1 className='text-2xl font-bold my-5'>Create an account</h1>
+      <h1 className='text-2xl font-bold my-5 text-main-darkest'>
+        Create an account
+      </h1>
       <div className='w-full flex justify-around'>
         <div className='w-1/2'>
           <img alt={'New Accounts'} src={routes.assets.createAccount} />

@@ -7,8 +7,10 @@ import routes from '../../constants/routes';
 import { Button } from '../../components/ui/Button';
 import { Loader } from '../../components/ui/Loader';
 import type { Incident } from './types';
-import { incidentStatusOptions, timeFrames } from '../../constants/common';
+import { incidentStatusOptions } from '../../constants/common';
 import { IncidentCard } from './IncidentCard';
+import { TimeFrameSelector } from '../../components/ui/TimeFrameSelector';
+import { UserSelect } from '../../components/UserSelect';
 
 export const Incidents: React.FC = () => {
   const { requestOptions } = useContext(AxisContext);
@@ -17,6 +19,7 @@ export const Incidents: React.FC = () => {
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [timeFrame, setTimeFrame] = useState<string>('all time');
+  const [assignee, setAssignee] = useState<string>();
 
   useEffect(() => {
     if (selectedAccount?.value) {
@@ -24,7 +27,8 @@ export const Incidents: React.FC = () => {
       API.incidents(requestOptions)
         .getIncidents(selectedAccount?.value, timeFrame)
         .then((res) => {
-          setIncidents(res.data.responseObject);
+          const results: Incident[] = res.data.responseObject;
+          setIncidents(results);
           setLoading(false);
         })
         .catch((err: any) => {
@@ -38,18 +42,14 @@ export const Incidents: React.FC = () => {
   return (
     <div className='flex flex-col w-full'>
       <div className='flex justify-between items-center mb-6'>
-        <h1 className='text-2xl font-bold'>Incidents</h1>
-        <select
-          className='bg-main-lightest p-2 rounded'
-          value={timeFrame}
-          onChange={(e) => setTimeFrame(e.target.value)}
-        >
-          {timeFrames.map((frame) => (
-            <option key={frame} value={frame}>
-              {frame.charAt(0).toUpperCase() + frame.slice(1)}
-            </option>
-          ))}
-        </select>
+        <h1 className='text-2xl font-bold text-main-darkest'>Incidents</h1>
+        <div className='flex'>
+          <TimeFrameSelector
+            setTimeFrame={setTimeFrame}
+            timeFrame={timeFrame}
+          />
+          <UserSelect update={setAssignee} extraClass='ml-4' />
+        </div>
         <Link to={routes.platform.createIncident}>
           <Button type='button' text='Create Incident' theme='primary' />
         </Link>
@@ -59,7 +59,10 @@ export const Incidents: React.FC = () => {
         <div className='flex justify-center my-20'>
           <Loader />
         </div>
-      ) : incidents.length === 0 ? (
+      ) : incidents.filter(
+          (incident) =>
+            !assignee || Number(incident.assignee) === Number(assignee),
+        ).length === 0 ? (
         <div className='bg-white rounded-lg shadow p-6 text-center'>
           <h3 className='text-lg font-medium text-gray-900'>
             No incidents found
@@ -77,7 +80,12 @@ export const Incidents: React.FC = () => {
                 className={`p-4 h-full w-[350px] bg-main-lightest border-y ${i === 0 ? 'border-x' : 'border-r'} border-main-darkest`}
               >
                 {incidents
-                  .filter((incident: Incident) => incident.status === status)
+                  .filter(
+                    (incident: Incident) =>
+                      incident.status === status &&
+                      (!assignee ||
+                        Number(incident.assignee) === Number(assignee)),
+                  )
                   .map((incident: Incident) => (
                     <IncidentCard
                       incident={incident}

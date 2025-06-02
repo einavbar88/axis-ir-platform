@@ -22,7 +22,9 @@ export const ManageAccount: React.FC = () => {
   return (
     <div className='flex flex-col items-center justify-center'>
       <div className='flex justify-center mb-4 items-center w-full relative'>
-        <h1 className='text-2xl font-bold text-center'>Account Details</h1>
+        <h1 className='text-2xl font-bold text-center text-main-darkest'>
+          Account Details
+        </h1>
         <Link
           className='absolute right-12 p-2 bg-main-lightest rounded-md'
           to={routes.platform.editAccount.replace(':id', id as string)}
@@ -30,7 +32,7 @@ export const ManageAccount: React.FC = () => {
           Edit
         </Link>
       </div>
-      <div className='space-y-2 text-gray-700 w-full grid grid-cols-3 mb-4'>
+      <div className='space-y-2 text-gray-800 w-full grid grid-cols-3 mb-4'>
         <div className='flex justify-start'>
           <span className='font-semibold mr-2'>Company ID:</span>
           <span>{accountData?.companyId}</span>

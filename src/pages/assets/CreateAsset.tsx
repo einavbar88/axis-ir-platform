@@ -66,7 +66,9 @@ export const CreateAsset: React.FC = () => {
 
   return (
     <div className='w-full flex flex-col justify-center items-center'>
-      <h1 className='text-2xl font-bold my-5'>Create New Asset</h1>
+      <h1 className='text-2xl font-bold my-5 text-main-darkest'>
+        Create New Asset
+      </h1>
       <div className='w-full flex justify-around'>
         <div className='w-1/2'>
           <img alt={'New Asset'} src={routes.assets.createAsset} />
@@ -87,7 +89,7 @@ export const CreateAsset: React.FC = () => {
             </div>
 
             <div className='w-full'>
-              <p className='block text-sm font-medium text-gray-700'>
+              <p className='block text-sm font-medium text-gray-800'>
                 Asset Type
               </p>
               <select
@@ -108,7 +110,7 @@ export const CreateAsset: React.FC = () => {
             </div>
 
             <div className='w-full'>
-              <p className='block text-sm font-medium text-gray-700'>
+              <p className='block text-sm font-medium text-gray-800'>
                 Operating System
               </p>
               <select
@@ -120,14 +122,14 @@ export const CreateAsset: React.FC = () => {
                 <option value=''>Select Operating System</option>
                 {osOptions.map((os) => (
                   <option key={os} value={os}>
-                    {os}
+                    {os.charAt(0) + os.slice(1).toLowerCase()}
                   </option>
                 ))}
               </select>
             </div>
 
             <div className='w-full'>
-              <p className='block text-sm font-medium text-gray-700'>Status</p>
+              <p className='block text-sm font-medium text-gray-800'>Status</p>
               <select
                 required
                 name='status'
@@ -137,14 +139,18 @@ export const CreateAsset: React.FC = () => {
                 <option value=''>Select Status</option>
                 {assetStatusOptions.map((status) => (
                   <option key={status} value={status}>
-                    {status.charAt(0).toUpperCase() + status.slice(1)}
+                    {status.charAt(0) + status.slice(1).toLowerCase()}
                   </option>
                 ))}
               </select>
             </div>
             <div className='w-full'>
               <strong>Priority</strong>
-              <select name={'priority'} onChange={onChangeField}>
+              <select
+                className='p-2 ml-2 rounded-lg bg-transparent'
+                name={'priority'}
+                onChange={onChangeField}
+              >
                 {priorities.map((priority, i) => (
                   <option key={priority} value={i + 1}>
                     {priority}
@@ -154,7 +160,7 @@ export const CreateAsset: React.FC = () => {
             </div>
 
             <div className='w-full'>
-              <p className='block text-sm font-medium text-gray-700'>
+              <p className='block text-sm font-medium text-gray-800'>
                 Traffic Light Protocol (TLP)
               </p>
               <select
@@ -166,13 +172,13 @@ export const CreateAsset: React.FC = () => {
                 <option value=''>Select TLP</option>
                 {tlpOptions.map((tlp) => (
                   <option key={tlp} value={tlp}>
-                    {tlp.charAt(0).toUpperCase() + tlp.slice(1)}
+                    {tlp.charAt(0) + tlp.slice(1).toLowerCase()}
                   </option>
                 ))}
               </select>
             </div>
             <div className='w-full'>
-              <p className='block text-sm font-medium text-gray-700'>
+              <p className='block text-sm font-medium text-gray-800'>
                 Asset Groups (optional)
               </p>
               <Select

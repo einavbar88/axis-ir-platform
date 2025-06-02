@@ -99,7 +99,9 @@ export const Users: React.FC = () => {
         </AxisIRModal>
       )}
       <div className='flex justify-center items-center mb-6 relative'>
-        <h1 className='text-2xl font-bold mb-4 text-center'>Account users</h1>
+        <h1 className='text-2xl font-bold mb-4 text-center text-main-darkest'>
+          Account users
+        </h1>
         <div className='absolute right-0 top-0 flex gap-2'>
           <Button
             type='button'

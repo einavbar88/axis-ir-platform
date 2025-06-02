@@ -14,6 +14,11 @@ const incidents = (config: AxiosRequestConfig) => ({
     ),
   getById: async (id: number) =>
     axios.get(`${routes.api.incidents.getById}/${id}`, config),
+  getIoc: async (caseIds: string[], timeFrame: string) =>
+    axios.get(
+      `${routes.api.incidents.getIoc}?caseIds=${caseIds.join('-')}?timeFrame=${timeFrame}`,
+      config,
+    ),
 });
 
 export default incidents;
