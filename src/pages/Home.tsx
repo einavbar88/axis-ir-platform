@@ -126,12 +126,22 @@ export const Home: React.FC = () => {
   ) => {
     const labels = Object.keys(data);
     const counts = Object.values(data);
+
+    const sortedData = labels.map((label, index) => ({
+      label,
+      count: counts[index],
+    }));
+
+    sortedData.sort(
+      (a, b) => new Date(a.label).getTime() - new Date(b.label).getTime(),
+    );
+
     return {
-      labels,
+      labels: sortedData.map((item) => item.label),
       datasets: [
         {
           label,
-          data: counts,
+          data: sortedData.map((item) => item.count),
           backgroundColor: chartsBgColors[theme],
           borderColor: chartsBgColors[theme].replace('0.6', '1'),
           borderWidth: 1,
