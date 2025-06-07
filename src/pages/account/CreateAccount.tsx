@@ -58,7 +58,7 @@ export const CreateAccount: React.FC = () => {
         });
         navigate(routes.platform.home);
       })
-      .catch((e) => console.log(e));
+      .catch();
   };
 
   return (

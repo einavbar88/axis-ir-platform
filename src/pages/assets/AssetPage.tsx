@@ -7,6 +7,7 @@ import { API } from '../../api/API';
 import { AxisContext } from '../../store/AxisContext';
 import { AccountContext, type Option } from '../../store/AccountContext';
 import { TimeFrameSelector } from '../../components/ui/TimeFrameSelector';
+import { getVisibleString } from '../helper';
 
 export const AssetPage: React.FC = () => {
   const { id } = useParams();
@@ -38,14 +39,14 @@ export const AssetPage: React.FC = () => {
       API.assets(requestOptions)
         .getIocForAssets(id, timeFrame)
         .then((res) => setIocData(res.data.responseObject))
-        .catch(() => {});
+        .catch();
     }
   }, [id, assetGroupOptions, requestOptions, timeFrame]);
 
   const getVisibleText = (text?: string, isDate = false) => {
     if (!text) return '';
     if (isDate) return new Date(text).toLocaleString();
-    return `${text[0]}${text.slice(1).toLowerCase()}`;
+    return `${getVisibleString(text)}`;
   };
 
   return (

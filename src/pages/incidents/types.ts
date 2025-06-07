@@ -39,3 +39,24 @@ export type EditModalProps = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSave: () => void;
 };
+
+export type Indicator = {
+  linkId?: number;
+  iocId?: number;
+  caseId?: number;
+  assetId?: number;
+  linkType?: string;
+  value?: string;
+  linkedBy?: number;
+  metaData?: any;
+  tlp: string;
+  createdAt?: string;
+  updatedAt?: string;
+  attackPhase?: string;
+  confidence: string;
+  type?: string;
+  classification?: string;
+  priority: number | string;
+  classifiedBy?: number | string;
+  detectedAt: string;
+};

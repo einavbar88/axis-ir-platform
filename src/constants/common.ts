@@ -4,8 +4,8 @@ export const incidentStatusOptions = [
   'NEW',
   'OPEN',
   'PENDING',
-  'CLOSED',
   'ESCALATED',
+  'CLOSED',
 ];
 
 export const indicatorStatusOptions = [

@@ -14,6 +14,7 @@ import {
   osOptions,
   assetStatusOptions,
 } from '../../constants/common';
+import { getVisibleString } from '../helper';
 
 export const CreateAsset: React.FC = () => {
   const { requestOptions } = useContext(AxisContext);
@@ -122,7 +123,7 @@ export const CreateAsset: React.FC = () => {
                 <option value=''>Select Operating System</option>
                 {osOptions.map((os) => (
                   <option key={os} value={os}>
-                    {os.charAt(0) + os.slice(1).toLowerCase()}
+                    {getVisibleString(os)}
                   </option>
                 ))}
               </select>
@@ -139,7 +140,7 @@ export const CreateAsset: React.FC = () => {
                 <option value=''>Select Status</option>
                 {assetStatusOptions.map((status) => (
                   <option key={status} value={status}>
-                    {status.charAt(0) + status.slice(1).toLowerCase()}
+                    {getVisibleString(status)}
                   </option>
                 ))}
               </select>
@@ -172,7 +173,7 @@ export const CreateAsset: React.FC = () => {
                 <option value=''>Select TLP</option>
                 {tlpOptions.map((tlp) => (
                   <option key={tlp} value={tlp}>
-                    {tlp.charAt(0) + tlp.slice(1).toLowerCase()}
+                    {getVisibleString(tlp)}
                   </option>
                 ))}
               </select>

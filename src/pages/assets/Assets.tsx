@@ -23,9 +23,6 @@ export const Assets: React.FC = () => {
       API.assets(requestOptions)
         .getAssets(selectedAccount?.value)
         .then((res) => {
-          console.log(
-            res.data.responseObject.map((asset: any) => asset.assetGroupId),
-          );
           const withGroups = res.data.responseObject.map((asset: Asset) => ({
             ...asset,
             assetGroupId: JSON.parse(asset.assetGroupId ?? '[]')
@@ -47,9 +44,6 @@ export const Assets: React.FC = () => {
     }
   }, [selectedAccount, requestOptions, assetGroupOptions]);
 
-  useEffect(() => {
-    console.log('assets', assets);
-  }, [assets]);
   return (
     <div className='flex flex-col w-full'>
       <div className='flex justify-between items-center mb-6'>

@@ -23,7 +23,7 @@ export const UserSelect: React.FC<Props> = ({
       value={defaultValue}
       onChange={(e) => update(e.target.value)}
     >
-      <option key='none' value={''}>
+      <option key='none' value={0}>
         Select Assignee
       </option>
       {accountUsers.map((option) => (

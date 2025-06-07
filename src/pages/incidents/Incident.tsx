@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import { API } from '../../api/API';
 import { AxisContext } from '../../store/AxisContext';
-import type { Incident as IncidentType, Task } from './types';
+import type { Incident as IncidentType, Indicator, Task } from './types';
 import { incidentStatusOptions } from '../../constants/common';
 import { useIsClickOutside } from '../../hooks/useIsClickOutside';
 import { Button } from '../../components/ui/Button';
@@ -14,6 +14,10 @@ import { AddTaskModal } from './modals/AddTaskModal';
 import { AccountContext } from '../../store/AccountContext';
 import routes from '../../constants/routes';
 import { priorities } from '../../constants/common';
+import { DataTable } from '../../components/ui/Table';
+import { iocColumns } from './constants';
+import { getVisibleString } from '../helper';
+import { AddIndicatorModal } from './modals/AddIndicatorModal';
 
 export const Incident: React.FC = () => {
   const { requestOptions } = useContext(AxisContext);
@@ -33,6 +37,10 @@ export const Incident: React.FC = () => {
   const addTaskModalRef = useRef<HTMLDivElement>(null);
   const { isOpen: addTaskModalOpen, setIsOpen: setAddTaskModalOpen } =
     useIsClickOutside(addTaskModalRef);
+
+  const addIocModalRef = useRef<HTMLDivElement>(null);
+  const { isOpen: addIocModalOpen, setIsOpen: setAddIocModalOpen } =
+    useIsClickOutside(addIocModalRef);
 
   const editTitleModalRef = useRef<HTMLDivElement>(null);
   const { isOpen: titleModalOpen, setIsOpen: setTitleModalOpen } =
@@ -94,7 +102,7 @@ export const Incident: React.FC = () => {
         }));
         setTasks(tasks);
       })
-      .catch((e) => {});
+      .catch();
   };
 
   useEffect(() => {
@@ -105,6 +113,25 @@ export const Incident: React.FC = () => {
         setDescription(res.data.responseObject.description);
         setTitle(res.data.responseObject.title);
       });
+    API.incidents(requestOptions)
+      .getIoc([`${id}`], 'all time')
+      .then((res) => {
+        setIndicators(
+          res.data.responseObject.map((ioc: Indicator) => {
+            const { priority, attackPhase, confidence, detectedAt, tlp } = ioc;
+            const phase = attackPhase?.split('_').join(' ') ?? '';
+            return {
+              ...ioc,
+              tlp: getVisibleString(tlp),
+              priority: priorities[priority as number],
+              attackPhase: getVisibleString(phase),
+              confidence: getVisibleString(confidence),
+              detectedAt: new Date(detectedAt).toLocaleString('en-IL'),
+            };
+          }),
+        );
+      })
+      .catch();
     updateTasks();
   }, [id]);
 
@@ -137,6 +164,16 @@ export const Incident: React.FC = () => {
             onSave={updateTasks}
             value={id}
             chosenTask={chosenTask}
+            onChange={() => {}}
+          />
+        )}
+        {addIocModalOpen && (
+          <AddIndicatorModal
+            ref={addIocModalRef}
+            close={() => setAddIocModalOpen(false)}
+            onSave={() => {}}
+            value={id}
+            chosenIndicator={undefined}
             onChange={() => {}}
           />
         )}
@@ -196,7 +233,7 @@ export const Incident: React.FC = () => {
                   >
                     {incidentStatusOptions.map((status) => (
                       <option key={status} value={status}>
-                        {status.charAt(0) + status.slice(1).toLowerCase()}
+                        {getVisibleString(status)}
                       </option>
                     ))}
                   </select>
@@ -309,8 +346,7 @@ export const Incident: React.FC = () => {
                               : '+ Assign'}
                           </span>
                           <span className='cursor-pointer'>
-                            {task.status.charAt(0) +
-                              task.status.slice(1).toLowerCase()}
+                            {getVisibleString(task.status)}
                           </span>
                         </div>
                       </td>
@@ -334,37 +370,17 @@ export const Incident: React.FC = () => {
               text={'Add IOC'}
               theme={'primary'}
               size={'small'}
-              onClick={() => {}}
+              onClick={() => {
+                setAddIocModalOpen(true);
+              }}
             />
           </div>
           {indicators.length > 0 ? (
-            <div className='max-h-[180px] overflow-y-auto mt-4'>
-              <table className='w-full border mt-4 bg-white max-h-[300px] overflow-y-auto'>
-                <tbody>
-                  {indicators.map((indicator) => (
-                    <tr key={indicator.indicatorId}>
-                      <td className='p-4 w-full border-b border-main-dark-50 flex justify-between hover:bg-main-lightest'>
-                        <div>
-                          <div>{indicator.value}</div>
-                          <div>{indicator.classification}</div>
-                          <div>{indicator.type}</div>
-                        </div>
-                        <div
-                          onClick={() => setAddTaskModalOpen(true)}
-                          className='cursor-pointer mr-4 text-main-dark-50'
-                        >
-                          {
-                            accountUsers.find(
-                              (user) => user.value == indicator.classifiedBy,
-                            )?.label
-                          }
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <DataTable
+              rows={indicators}
+              columns={iocColumns}
+              paginationModel={{ pageSize: 10, page: 0 }}
+            />
           ) : (
             <p className='m-4 pl-4 text-sm text-main-darkest'>
               No IOCs for this incident yet.

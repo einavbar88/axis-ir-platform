@@ -10,6 +10,7 @@ import { Button } from '../../components/ui/Button';
 import { incidentStatusOptions, tlpOptions } from '../../constants/common';
 import { RichTextEditor } from '../../components/ui/rich-text-editor';
 import { priorities } from '../../constants/common';
+import { getVisibleString } from '../helper';
 
 export const CreateIncident: React.FC = () => {
   const { requestOptions } = useContext(AxisContext);
@@ -108,7 +109,7 @@ export const CreateIncident: React.FC = () => {
                 <option value=''>Select Status</option>
                 {incidentStatusOptions.map((status) => (
                   <option key={status} value={status}>
-                    {status.charAt(0) + status.slice(1).toLowerCase()}
+                    {getVisibleString(status)}
                   </option>
                 ))}
               </select>
@@ -136,7 +137,7 @@ export const CreateIncident: React.FC = () => {
                 <option value=''>Select TLP</option>
                 {tlpOptions.map((tlp) => (
                   <option key={tlp} value={tlp}>
-                    {tlp.charAt(0) + tlp.slice(1).toLowerCase()}
+                    {getVisibleString(tlp)}
                   </option>
                 ))}
               </select>

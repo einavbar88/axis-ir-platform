@@ -9,6 +9,7 @@ import { AccountContext } from '../../../store/AccountContext';
 import { UserSelect } from '../../../components/UserSelect';
 import { API } from '../../../api/API';
 import { incidentStatusOptions, priorities } from '../../../constants/common';
+import { getVisibleString } from '../../helper';
 
 export const AddTaskModal: React.FC<
   EditModalProps & { chosenTask?: React.RefObject<Task> }
@@ -117,7 +118,7 @@ export const AddTaskModal: React.FC<
           >
             {incidentStatusOptions.map((status) => (
               <option key={status} value={status}>
-                {status.charAt(0) + status.slice(1).toLowerCase()}
+                {getVisibleString(status)}
               </option>
             ))}
           </select>

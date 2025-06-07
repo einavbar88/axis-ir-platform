@@ -14,8 +14,12 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { chartsBgColors } from '../constants/common';
 import { TimeFrameSelector } from '../components/ui/TimeFrameSelector';
+import {
+  groupByTimeScale,
+  prepareChartData,
+  prepareChartDataMultiDataSets,
+} from './helper';
 
 ChartJS.register(
   CategoryScale,
@@ -42,6 +46,7 @@ export const Home: React.FC = () => {
     let incidentsFromDb = [];
     let tasksFromDb = [];
     let iocFromDb = [];
+    let maliciousFromDb = [];
     let infectedAssetsFromDb = [];
 
     try {
@@ -52,8 +57,25 @@ export const Home: React.FC = () => {
       incidentsFromDb = incidentsResults.data.responseObject;
     } catch (e) {}
 
-    const incidentCountsByTime = groupByTimeScale(incidentsFromDb, 'openedAt');
-    setIncidents(prepareChartData(incidentCountsByTime, 'Incidents', 0));
+    const incidentCountsByTime = groupByTimeScale(
+      incidentsFromDb,
+      'openedAt',
+      timeScale,
+    );
+
+    const unassignedIncidentsCountsByTime = groupByTimeScale(
+      incidentsFromDb.filter((incident: any) => !incident.assigneeName),
+      'openedAt',
+      timeScale,
+    );
+
+    setIncidents(
+      prepareChartDataMultiDataSets(
+        [incidentCountsByTime, unassignedIncidentsCountsByTime],
+        ['Incidents', 'Unassigned'],
+        [0, 6],
+      ),
+    );
 
     try {
       const tasksResults = await API.tasks(requestOptions).getAllTasks(
@@ -62,8 +84,23 @@ export const Home: React.FC = () => {
       tasksFromDb = tasksResults.data.responseObject;
     } catch (e) {}
 
-    const taskCountsByTime = groupByTimeScale(tasksFromDb, 'createdAt');
-    setTasks(prepareChartData(taskCountsByTime, 'Tasks', 1));
+    const taskCountsByTime = groupByTimeScale(
+      tasksFromDb,
+      'createdAt',
+      timeScale,
+    );
+    const unassignedTaskCountsByTime = groupByTimeScale(
+      tasksFromDb.filter((task: any) => !task.assignee),
+      'createdAt',
+      timeScale,
+    );
+    setTasks(
+      prepareChartDataMultiDataSets(
+        [taskCountsByTime, unassignedTaskCountsByTime],
+        ['Tasks', 'Unassigned'],
+        [1, 5],
+      ),
+    );
 
     try {
       const assetsResults = await API.incidents(requestOptions).getIoc(
@@ -71,83 +108,38 @@ export const Home: React.FC = () => {
         timeFrame,
       );
       iocFromDb = assetsResults.data.responseObject;
-      infectedAssetsFromDb = iocFromDb.reduce((acc: any[], curr: any) => {
+      maliciousFromDb = iocFromDb.filter(
+        (ioc: any) => ioc.classification === 'MALICIOUS',
+      );
+      infectedAssetsFromDb = maliciousFromDb.reduce((acc: any[], curr: any) => {
         const exists = acc.some((item) => item.assetId === curr.assetId);
         if (!exists) acc.push(curr);
         return acc;
       }, []);
     } catch (e) {}
 
-    const iocCountByTime = groupByTimeScale(iocFromDb, 'createdAt');
+    const maliciousIocByTime = groupByTimeScale(
+      maliciousFromDb,
+      'createdAt',
+      timeScale,
+    );
+    const iocCountByTime = groupByTimeScale(iocFromDb, 'createdAt', timeScale);
+
     const assetsCountByTime = groupByTimeScale(
       infectedAssetsFromDb,
       'createdAt',
+      timeScale,
     );
-    setIoc(prepareChartData(iocCountByTime, 'IOC', 2));
+    setIoc(
+      prepareChartDataMultiDataSets(
+        [iocCountByTime, maliciousIocByTime],
+        ['IOC', 'Malicious'],
+        [2, 3],
+      ),
+    );
     setInfectedAssets(
-      prepareChartData(assetsCountByTime, 'Infected Assets', 3),
+      prepareChartData(assetsCountByTime, 'Infected Assets', 4),
     );
-  };
-
-  const groupByTimeScale = (data: any[], dateField: string) => {
-    const timeCounts: { [key: string]: number } = {};
-
-    data?.forEach((item) => {
-      const date = new Date(item[dateField]);
-      let key = '';
-
-      switch (timeScale) {
-        case 'day':
-          key = date.toISOString().split('T')[0];
-          break;
-
-        case 'month':
-          key = `${date.getFullYear()}-${date.toLocaleString('default', { month: 'short' })}`;
-          break;
-
-        case 'year':
-          key = `${date.getFullYear()}`;
-          break;
-
-        default:
-          key = date.toISOString().split('T')[0];
-      }
-
-      timeCounts[key] = (timeCounts[key] || 0) + 1;
-    });
-
-    return timeCounts;
-  };
-
-  const prepareChartData = (
-    data: { [key: string]: number },
-    label: string,
-    theme: number,
-  ) => {
-    const labels = Object.keys(data);
-    const counts = Object.values(data);
-
-    const sortedData = labels.map((label, index) => ({
-      label,
-      count: counts[index],
-    }));
-
-    sortedData.sort(
-      (a, b) => new Date(a.label).getTime() - new Date(b.label).getTime(),
-    );
-
-    return {
-      labels: sortedData.map((item) => item.label),
-      datasets: [
-        {
-          label,
-          data: sortedData.map((item) => item.count),
-          backgroundColor: chartsBgColors[theme],
-          borderColor: chartsBgColors[theme].replace('0.6', '1'),
-          borderWidth: 1,
-        },
-      ],
-    };
   };
 
   useEffect(() => {
@@ -185,6 +177,13 @@ export const Home: React.FC = () => {
               data={incidents}
               options={{
                 responsive: true,
+                scales: {
+                  y: {
+                    ticks: {
+                      stepSize: 1,
+                    },
+                  },
+                },
                 plugins: {
                   legend: { display: false },
                   title: { display: true, text: 'New incidents' },
@@ -201,6 +200,13 @@ export const Home: React.FC = () => {
               data={tasks}
               options={{
                 responsive: true,
+                scales: {
+                  y: {
+                    ticks: {
+                      stepSize: 1,
+                    },
+                  },
+                },
                 plugins: {
                   legend: { display: false },
                   title: { display: true, text: 'New tasks' },
@@ -217,6 +223,13 @@ export const Home: React.FC = () => {
               data={ioc}
               options={{
                 responsive: true,
+                scales: {
+                  y: {
+                    ticks: {
+                      stepSize: 1,
+                    },
+                  },
+                },
                 plugins: {
                   legend: { display: false },
                   title: { display: true, text: 'IOCs' },
@@ -233,6 +246,13 @@ export const Home: React.FC = () => {
               data={infectedAssets}
               options={{
                 responsive: true,
+                scales: {
+                  y: {
+                    ticks: {
+                      stepSize: 1,
+                    },
+                  },
+                },
                 plugins: {
                   legend: { display: false },
                   title: { display: true, text: 'Infected Assets' },

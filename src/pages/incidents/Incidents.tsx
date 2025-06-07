@@ -11,6 +11,7 @@ import { incidentStatusOptions } from '../../constants/common';
 import { IncidentCard } from './IncidentCard';
 import { TimeFrameSelector } from '../../components/ui/TimeFrameSelector';
 import { UserSelect } from '../../components/UserSelect';
+import { getVisibleString } from '../helper';
 
 export const Incidents: React.FC = () => {
   const { requestOptions } = useContext(AxisContext);
@@ -74,7 +75,7 @@ export const Incidents: React.FC = () => {
           {incidentStatusOptions.map((status, i) => (
             <div key={status} className='flex flex-col'>
               <h3 className='font-semibold text-main-dark mb-5 text-center'>
-                {status.charAt(0) + status.slice(1).toLowerCase()}
+                {getVisibleString(status)}
               </h3>
               <div
                 className={`p-4 h-full w-[350px] bg-main-lightest border-y ${i === 0 ? 'border-x' : 'border-r'} border-main-darkest`}

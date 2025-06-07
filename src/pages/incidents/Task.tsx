@@ -11,6 +11,7 @@ import { DescriptionEditModal } from './modals/DescriptionEditModal';
 import routes from '../../constants/routes';
 import type { Task as TaskType } from './types';
 import { incidentStatusOptions, priorities } from '../../constants/common';
+import { getVisibleString } from '../helper';
 
 export const Task: React.FC = () => {
   const { requestOptions } = useContext(AxisContext);
@@ -161,7 +162,7 @@ export const Task: React.FC = () => {
                 >
                   {incidentStatusOptions.map((status) => (
                     <option key={status} value={status}>
-                      {status.charAt(0) + status.slice(1).toLowerCase()}
+                      {getVisibleString(status)}
                     </option>
                   ))}
                 </select>
