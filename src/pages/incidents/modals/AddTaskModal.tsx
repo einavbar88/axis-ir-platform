@@ -3,7 +3,7 @@ import Select from 'react-select';
 import { AxisIRModal } from '../../../components/ui/AxisIRModal';
 import { Button } from '../../../components/ui/Button';
 import type { EditModalProps, Task } from '../types';
-import { RichTextEditor } from '../../../components/ui/rich-text-editor';
+import { RichTextEditor } from '../../../components/ui/richTextEditor';
 import { AxisContext } from '../../../store/AxisContext';
 import { AccountContext } from '../../../store/AccountContext';
 import { UserSelect } from '../../../components/UserSelect';

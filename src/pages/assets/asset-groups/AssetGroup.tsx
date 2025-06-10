@@ -32,7 +32,7 @@ export const AssetGroup: React.FC = () => {
     API.assets(requestOptions)
       .getAssetGroup(Number(id))
       .then((res) => setAssetGroup(res.data.responseObject))
-      .catch();
+      .catch((e) => {});
   };
   useEffect(() => {
     if (id) {
@@ -54,7 +54,7 @@ export const AssetGroup: React.FC = () => {
             })),
           ),
         )
-        .catch();
+        .catch((e) => {});
       // API.assets(requestOptions)
       //   .getIocForAssetGroup(id, timeFrame)
       //   .then((res) => setIocData(res.data.responseObject))

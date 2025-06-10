@@ -1,6 +1,6 @@
 import React from 'react';
 import { AxisIRModal } from '../../../components/ui/AxisIRModal';
-import { RichTextEditor } from '../../../components/ui/rich-text-editor';
+import { RichTextEditor } from '../../../components/ui/richTextEditor';
 import { Button } from '../../../components/ui/Button';
 import type { EditModalProps } from '../types';
 

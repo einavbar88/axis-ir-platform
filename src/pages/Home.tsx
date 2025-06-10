@@ -120,14 +120,14 @@ export const Home: React.FC = () => {
 
     const maliciousIocByTime = groupByTimeScale(
       maliciousFromDb,
-      'createdAt',
+      'detectedAt',
       timeScale,
     );
-    const iocCountByTime = groupByTimeScale(iocFromDb, 'createdAt', timeScale);
+    const iocCountByTime = groupByTimeScale(iocFromDb, 'detectedAt', timeScale);
 
     const assetsCountByTime = groupByTimeScale(
       infectedAssetsFromDb,
-      'createdAt',
+      'detectedAt',
       timeScale,
     );
     setIoc(

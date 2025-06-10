@@ -8,25 +8,31 @@ import {
   tlpOptions,
   indicatorClassificationOptions,
   indicatorStatusOptions,
+  linkTypeOptions,
 } from '../../../constants/common';
 import { getVisibleString } from '../../helper';
+import { API } from '../../../api/API';
+import { AccountContext } from '../../../store/AccountContext';
 
 export const AddIndicatorModal: React.FC<
   EditModalProps & { chosenIndicator?: React.RefObject<Indicator> }
 > = ({ ref, value, onSave, close, chosenIndicator }) => {
-  const { requestOptions } = useContext(AxisContext);
+  const { requestOptions, user } = useContext(AxisContext);
+  const { assetsOptions } = useContext(AccountContext);
 
   const [formData, setFormData] = useState<Indicator>(
     chosenIndicator?.current
       ? chosenIndicator.current
       : {
+          assetId: Number(assetsOptions[0].value),
           caseId: Number(value),
           value: '',
-          tlp: '',
-          classification: '',
+          tlp: tlpOptions[0],
+          linkType: linkTypeOptions[0],
+          classification: indicatorClassificationOptions[0],
           type: indicatorStatusOptions[0],
-          confidence: '',
-          attackPhase: '',
+          confidence: 'LOW',
+          attackPhase: 'RECONNAISSANCE',
           priority: 1,
           detectedAt: new Date().toISOString(),
         },
@@ -43,22 +49,17 @@ export const AddIndicatorModal: React.FC<
   };
 
   const handleSave = async () => {
-    if (
-      formData.value?.trim() === '' ||
-      !formData.priority ||
-      !formData.tlp ||
-      !formData.classification ||
-      !formData.type ||
-      !formData.confidence ||
-      !formData.attackPhase ||
-      !formData.detectedAt
-    ) {
-      alert('Fill all required fields');
-      return;
+    try {
+      const data = { ...formData, classifiedBy: Number(user?.userId) };
+      if (chosenIndicator?.current) {
+        await API.indicators(requestOptions).update(data);
+      } else {
+        await API.indicators(requestOptions).create(data);
+      }
+      onSave();
+    } catch (error) {
+      console.error('Error saving indicator:', error);
     }
-
-    console.log('Indicator data to be saved:', formData);
-    onSave();
   };
 
   return (
@@ -69,6 +70,21 @@ export const AddIndicatorModal: React.FC<
       width={'wide'}
     >
       <div className='overflow-y-auto max-h-[420px]'>
+        <div className='mb-4'>
+          <strong>Asset</strong>
+          <select
+            name='assetId'
+            value={formData.assetId}
+            onChange={handleChange}
+            className='mt-1 p-2 w-full border rounded'
+          >
+            {assetsOptions.map(({ label, value }) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </div>
         <div className='mb-4'>
           <strong>Value</strong>
           <input
@@ -89,6 +105,21 @@ export const AddIndicatorModal: React.FC<
             className='mt-1 p-2 w-full border rounded'
           >
             {indicatorStatusOptions.map((type) => (
+              <option key={type} value={type}>
+                {getVisibleString(type)}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className='mb-4'>
+          <strong>Link Type</strong>
+          <select
+            name='linkType'
+            value={formData.type}
+            onChange={handleChange}
+            className='mt-1 p-2 w-full border rounded'
+          >
+            {linkTypeOptions.map((type) => (
               <option key={type} value={type}>
                 {getVisibleString(type)}
               </option>

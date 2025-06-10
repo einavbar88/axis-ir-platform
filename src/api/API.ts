@@ -3,6 +3,7 @@ import accounts from './accounts';
 import assets from './assets';
 import incidents from './incidents';
 import tasks from './tasks';
+import indicators from './indicators';
 
 export const API = {
   users,
@@ -10,4 +11,5 @@ export const API = {
   assets,
   incidents,
   tasks,
+  indicators,
 };

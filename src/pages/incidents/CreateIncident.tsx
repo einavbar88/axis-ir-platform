@@ -8,7 +8,7 @@ import routes from '../../constants/routes';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import { incidentStatusOptions, tlpOptions } from '../../constants/common';
-import { RichTextEditor } from '../../components/ui/rich-text-editor';
+import { RichTextEditor } from '../../components/ui/richTextEditor';
 import { priorities } from '../../constants/common';
 import { getVisibleString } from '../helper';
 

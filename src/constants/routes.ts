@@ -67,6 +67,11 @@ const server = {
     getById: 'tasks/getById',
     update: 'tasks/update',
   },
+  indicators: {
+    create: 'indicators/create',
+    deleteIndicator: 'indicators/',
+    update: 'indicators/create',
+  },
 };
 
 const ASSETS_PATH = 'http://localhost:3000';

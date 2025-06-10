@@ -97,7 +97,7 @@ export const AxisProvider: React.FC<AxisProviderProps> = ({ children }) => {
             setIsLoggedIn(true);
           }
         })
-        .catch()
+        .catch((e) => {})
         .finally(() => setTimeout(() => setIsPageLoading(false), 2500));
     }
   }, []);
@@ -110,7 +110,7 @@ export const AxisProvider: React.FC<AxisProviderProps> = ({ children }) => {
           .then(({ data }) => {
             setAccounts(data.responseObject);
           })
-          .catch();
+          .catch((e) => {});
       }
       if (roles.length === 0) {
         await API.users(options)

@@ -80,7 +80,7 @@ export const AccountProvider: React.FC<AccountProviderProps> = ({
           })) || [],
         ),
       )
-      .catch();
+      .catch((e) => {});
 
     API.assets(requestOptions)
       .getAssets(selectedAccount?.value)
@@ -92,7 +92,7 @@ export const AccountProvider: React.FC<AccountProviderProps> = ({
           })) || [],
         ),
       )
-      .catch();
+      .catch((e) => {});
 
     const roleId = user?.roles.find(
       (role) => Number(selectedAccount?.value) === role.companyId,

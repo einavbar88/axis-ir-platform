@@ -63,3 +63,4 @@ export const assetStatusOptions = [
   'FALSE POSITIVE',
 ];
 export const osOptions = ['WINDOWS', 'MACOS', 'LINUX', 'OTHER'];
+export const linkTypeOptions = ['IMPACTED'];

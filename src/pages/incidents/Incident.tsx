@@ -18,6 +18,7 @@ import { DataTable } from '../../components/ui/Table';
 import { iocColumns } from './constants';
 import { getVisibleString } from '../helper';
 import { AddIndicatorModal } from './modals/AddIndicatorModal';
+import { AxisIRModal } from '../../components/ui/AxisIRModal';
 
 export const Incident: React.FC = () => {
   const { requestOptions } = useContext(AxisContext);
@@ -26,6 +27,7 @@ export const Incident: React.FC = () => {
   const navigate = useNavigate();
 
   const chosenTask = useRef<Task>(null) as React.MutableRefObject<any>;
+  const chosenIndicator = useRef<string>('');
 
   const [incident, setIncident] = useState<IncidentType>();
   const [tasks, setTasks] = useState<any[]>([]);
@@ -33,6 +35,12 @@ export const Incident: React.FC = () => {
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [descriptionTooltip, setDescriptionTooltip] = useState(false);
+
+  const deleteIndicatorModalRef = useRef<HTMLDivElement>(null);
+  const {
+    isOpen: deleteIndicatorModalOpen,
+    setIsOpen: setDeleteIndicatorModalOpen,
+  } = useIsClickOutside(deleteIndicatorModalRef);
 
   const addTaskModalRef = useRef<HTMLDivElement>(null);
   const { isOpen: addTaskModalOpen, setIsOpen: setAddTaskModalOpen } =
@@ -102,17 +110,11 @@ export const Incident: React.FC = () => {
         }));
         setTasks(tasks);
       })
-      .catch();
+      .catch((e) => {});
   };
 
-  useEffect(() => {
-    API.incidents(requestOptions)
-      .getById(Number(id))
-      .then((res) => {
-        setIncident(res.data.responseObject);
-        setDescription(res.data.responseObject.description);
-        setTitle(res.data.responseObject.title);
-      });
+  const updateIndicators = () => {
+    setAddIocModalOpen(false);
     API.incidents(requestOptions)
       .getIoc([`${id}`], 'all time')
       .then((res) => {
@@ -131,7 +133,37 @@ export const Incident: React.FC = () => {
           }),
         );
       })
-      .catch();
+      .catch((e) => {});
+  };
+
+  useEffect(() => {
+    API.incidents(requestOptions)
+      .getById(Number(id))
+      .then((res) => {
+        setIncident(res.data.responseObject);
+        setDescription(res.data.responseObject.description);
+        setTitle(res.data.responseObject.title);
+      })
+      .catch((e) => {});
+    API.incidents(requestOptions)
+      .getIoc([`${id}`], 'all time')
+      .then((res) => {
+        setIndicators(
+          res.data.responseObject.map((ioc: Indicator) => {
+            const { priority, attackPhase, confidence, detectedAt, tlp } = ioc;
+            const phase = attackPhase?.split('_').join(' ') ?? '';
+            return {
+              ...ioc,
+              tlp: getVisibleString(tlp),
+              priority: priorities[priority as number],
+              attackPhase: getVisibleString(phase),
+              confidence: getVisibleString(confidence),
+              detectedAt: new Date(detectedAt).toLocaleString('en-IL'),
+            };
+          }),
+        );
+      })
+      .catch((e) => {});
     updateTasks();
   }, [id]);
 
@@ -148,6 +180,16 @@ export const Incident: React.FC = () => {
     }
   };
 
+  const deleteIndicator = () => {
+    if (!chosenIndicator?.current) return;
+    API.indicators(requestOptions)
+      .delete(Number(chosenIndicator.current))
+      .then(() => {
+        updateIndicators();
+        setDeleteIndicatorModalOpen(false);
+      });
+  };
+
   return (
     <div>
       <Button
@@ -157,6 +199,29 @@ export const Incident: React.FC = () => {
         onClick={() => navigate(routes.platform.incidents)}
       />
       <div className='p-8 border border-main-dark rounded bg-main-lightest'>
+        {deleteIndicatorModalOpen && (
+          <AxisIRModal
+            ref={deleteIndicatorModalRef}
+            close={() => setDeleteIndicatorModalOpen(false)}
+            title={'Delete indicator'}
+          >
+            <p className='my-5'>
+              Are you sure you want to delete this indicator?
+            </p>
+            <div className={'flex justify-end'}>
+              <Button
+                text={'Keep'}
+                theme={'secondary'}
+                onClick={() => setDeleteIndicatorModalOpen(false)}
+              />
+              <Button
+                text={'Yes, delete'}
+                theme={'primary'}
+                onClick={deleteIndicator}
+              />
+            </div>
+          </AxisIRModal>
+        )}
         {addTaskModalOpen && (
           <AddTaskModal
             ref={addTaskModalRef}
@@ -171,7 +236,7 @@ export const Incident: React.FC = () => {
           <AddIndicatorModal
             ref={addIocModalRef}
             close={() => setAddIocModalOpen(false)}
-            onSave={() => {}}
+            onSave={updateIndicators}
             value={id}
             chosenIndicator={undefined}
             onChange={() => {}}
@@ -380,6 +445,10 @@ export const Incident: React.FC = () => {
               rows={indicators}
               columns={iocColumns}
               paginationModel={{ pageSize: 10, page: 0 }}
+              onClickRow={({ row }) => {
+                chosenIndicator.current = row.iocId;
+                setDeleteIndicatorModalOpen(true);
+              }}
             />
           ) : (
             <p className='m-4 pl-4 text-sm text-main-darkest'>

@@ -39,7 +39,7 @@ export const AssetPage: React.FC = () => {
       API.assets(requestOptions)
         .getIocForAssets(id, timeFrame)
         .then((res) => setIocData(res.data.responseObject))
-        .catch();
+        .catch((e) => {});
     }
   }, [id, assetGroupOptions, requestOptions, timeFrame]);
 
