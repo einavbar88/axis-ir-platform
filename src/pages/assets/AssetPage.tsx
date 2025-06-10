@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Button } from '../../components/ui/Button';
 import routes from '../../constants/routes';
 import type { CreateAssetForm } from './types';
@@ -8,6 +9,11 @@ import { AxisContext } from '../../store/AxisContext';
 import { AccountContext, type Option } from '../../store/AccountContext';
 import { TimeFrameSelector } from '../../components/ui/TimeFrameSelector';
 import { getVisibleString } from '../helper';
+import { Doughnut } from 'react-chartjs-2';
+import type { Indicator } from '../incidents/types';
+import { chartsBgColors } from '../../constants/common';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 export const AssetPage: React.FC = () => {
   const { id } = useParams();
@@ -35,10 +41,40 @@ export const AssetPage: React.FC = () => {
               )
               .join(', '),
           }),
-        );
+        )
+        .catch((e) => {});
       API.assets(requestOptions)
         .getIocForAssets(id, timeFrame)
-        .then((res) => setIocData(res.data.responseObject))
+        .then((res) => {
+          const ioc = res.data.responseObject;
+          const iocCount = ioc.length;
+          const maliciousCount = ioc.filter(
+            (indicator: Indicator) => indicator.classification === 'MALICIOUS',
+          ).length;
+
+          const data =
+            ioc.length > 0
+              ? {
+                  labels: ['Non-Malicious', 'Malicious'],
+                  datasets: [
+                    {
+                      label: 'Found',
+                      data: [iocCount - maliciousCount, maliciousCount],
+                      backgroundColor: [chartsBgColors[2], chartsBgColors[3]],
+                    },
+                  ],
+                }
+              : {
+                  labels: ['No IOCs'],
+                  datasets: [
+                    {
+                      data: [1],
+                      backgroundColor: [chartsBgColors[1]],
+                    },
+                  ],
+                };
+          setIocData(data);
+        })
         .catch((e) => {});
     }
   }, [id, assetGroupOptions, requestOptions, timeFrame]);
@@ -117,11 +153,20 @@ export const AssetPage: React.FC = () => {
         </div>
       </div>
       <div className='flex flex-col items-center mt-8'>
-        <div className='flex'>
-          <TimeFrameSelector
-            timeFrame={timeFrame}
-            setTimeFrame={setTimeFrame}
-          />
+        <TimeFrameSelector timeFrame={timeFrame} setTimeFrame={setTimeFrame} />
+        <div className='w-[100%] flex justify-center h-[400px] mt-8 mr-8'>
+          {iocData && (
+            <Doughnut
+              data={iocData}
+              options={{
+                responsive: true,
+                plugins: {
+                  legend: { display: false },
+                  title: { display: true, text: 'IOCs' },
+                },
+              }}
+            />
+          )}
         </div>
       </div>
     </div>
