@@ -19,6 +19,8 @@ const incidents = (config: AxiosRequestConfig) => ({
       `${routes.api.incidents.getIoc}?caseIds=${caseIds.join('-')}?timeFrame=${timeFrame}`,
       config,
     ),
+  generateReport: async (caseId: string) =>
+    axios.post(`${routes.api.incidents.generateReport}/${caseId}`, {}, config),
 });
 
 export default incidents;

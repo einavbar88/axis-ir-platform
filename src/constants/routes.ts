@@ -59,6 +59,7 @@ const server = {
     getByCompanyId: 'incidents/getByCompanyId',
     getById: 'incidents/getById',
     update: 'incidents/update',
+    generateReport: 'incidents/generateReport',
   },
   tasks: {
     create: 'tasks/create',

@@ -63,4 +63,32 @@ export const assetStatusOptions = [
   'FALSE POSITIVE',
 ];
 export const osOptions = ['WINDOWS', 'MACOS', 'LINUX', 'OTHER'];
-export const linkTypeOptions = ['IMPACTED'];
+export const attackPhaseOptions = [
+  'PREPARATION',
+  'INITIAL_ACCESS',
+  'DELIVERY',
+  'EXECUTION',
+  'PERSISTENCE',
+  'PRIV_ESCALATION',
+  'DEFENSE_EVASION',
+  'CREDENTIAL_ACCESS',
+  'DISCOVERY',
+  'LATERAL_MOVEMENT',
+  'COLLECTION',
+  'EXFILTRATION',
+  'COMMAND_AND_CONTROL',
+  'IMPACT',
+  'CONTAINMENT',
+  'ERADICATION',
+  'RECOVERY',
+];
+
+export const linkTypeOptions = [
+  'RELATED',
+  'IMPACTED',
+  'EXECUTED',
+  'FILE',
+  'PROCESS',
+  'ENDPOINT',
+  'OTHER',
+];

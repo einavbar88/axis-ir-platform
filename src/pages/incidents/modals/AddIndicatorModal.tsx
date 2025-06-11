@@ -9,6 +9,7 @@ import {
   indicatorClassificationOptions,
   indicatorStatusOptions,
   linkTypeOptions,
+  attackPhaseOptions,
 } from '../../../constants/common';
 import { getVisibleString } from '../../helper';
 import { API } from '../../../api/API';
@@ -164,13 +165,11 @@ export const AddIndicatorModal: React.FC<
             onChange={handleChange}
             className='mt-1 p-2 w-full border rounded'
           >
-            <option value='RECONNAISSANCE'>Reconnaissance</option>
-            <option value='WEAPONIZATION'>Weaponization</option>
-            <option value='DELIVERY'>Delivery</option>
-            <option value='EXPLOITATION'>Exploitation</option>
-            <option value='INSTALLATION'>Installation</option>
-            <option value='COMMAND_AND_CONTROL'>Command and Control</option>
-            <option value='ACTIONS_ON_OBJECTIVES'>Actions on Objectives</option>
+            {attackPhaseOptions.map((phase) => (
+              <option value={phase} key={phase}>
+                {getVisibleString(phase)}
+              </option>
+            ))}
           </select>
         </div>
         <div className='mb-4'>

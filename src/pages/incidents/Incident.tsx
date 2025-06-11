@@ -29,12 +29,20 @@ export const Incident: React.FC = () => {
   const chosenTask = useRef<Task>(null) as React.MutableRefObject<any>;
   const chosenIndicator = useRef<string>('');
 
-  const [incident, setIncident] = useState<IncidentType>();
+  const [incident, setIncident] = useState<
+    IncidentType & { reports?: { s3Path: string; generatedAt: string }[] }
+  >();
   const [tasks, setTasks] = useState<any[]>([]);
   const [indicators, setIndicators] = useState<any[]>([]);
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [descriptionTooltip, setDescriptionTooltip] = useState(false);
+
+  const downloadReportModalRef = useRef<HTMLDivElement>(null);
+  const {
+    isOpen: downloadReportModalOpen,
+    setIsOpen: setDownloadReportModalOpen,
+  } = useIsClickOutside(downloadReportModalRef);
 
   const deleteIndicatorModalRef = useRef<HTMLDivElement>(null);
   const {
@@ -190,15 +198,82 @@ export const Incident: React.FC = () => {
       });
   };
 
+  const downloadReport = (e: any) => {
+    e.preventDefault();
+
+    const filename = `${incident?.title}.pdf`;
+    const url = e.target.url.value;
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setDownloadReportModalOpen(false);
+  };
+
   return (
     <div>
-      <Button
-        text={'Back'}
-        type={'button'}
-        theme={'primary'}
-        onClick={() => navigate(routes.platform.incidents)}
-      />
+      <div className='flex justify-between'>
+        <Button
+          text={'Back'}
+          type={'button'}
+          theme={'primary'}
+          onClick={() => navigate(routes.platform.incidents)}
+        />
+        <div className='flex items-center'>
+          {(incident?.reports || []).length > 0 && (
+            <Button
+              text={'Download report'}
+              type={'button'}
+              theme={'secondary'}
+              onClick={() => setDownloadReportModalOpen(true)}
+            />
+          )}
+          <Button
+            text={'Generate report'}
+            type={'button'}
+            theme={'primary'}
+            onClick={() =>
+              API.incidents(requestOptions).generateReport(`${id}`)
+            }
+          />
+        </div>
+      </div>
       <div className='p-8 border border-main-dark rounded bg-main-lightest'>
+        {downloadReportModalOpen && (
+          <AxisIRModal
+            ref={downloadReportModalRef}
+            close={() => setDownloadReportModalOpen(false)}
+            title={'Download report'}
+          >
+            <form onSubmit={(e) => downloadReport(e)}>
+              <p className='my-5'>Which report would you like to download?</p>
+              <select
+                name='url'
+                className='mb-5 py-4 px-2'
+                defaultValue={incident?.reports?.[0]?.s3Path}
+              >
+                {(incident?.reports || []).map((report) => (
+                  <option key={report.s3Path} value={report.s3Path}>
+                    {report.generatedAt}
+                  </option>
+                ))}
+              </select>
+              <div className={'flex justify-end'}>
+                <Button
+                  text={'Cancel'}
+                  theme={'secondary'}
+                  type={'button'}
+                  onClick={() => setDownloadReportModalOpen(false)}
+                />
+                <Button text={'Download'} theme={'primary'} type={'submit'} />
+              </div>
+            </form>
+          </AxisIRModal>
+        )}
         {deleteIndicatorModalOpen && (
           <AxisIRModal
             ref={deleteIndicatorModalRef}
