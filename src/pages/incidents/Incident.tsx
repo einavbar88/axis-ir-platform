@@ -228,18 +228,18 @@ export const Incident: React.FC = () => {
             <Button
               text={'Download report'}
               type={'button'}
-              theme={'secondary'}
+              theme={'primary'}
               onClick={() => setDownloadReportModalOpen(true)}
             />
           )}
-          <Button
-            text={'Generate report'}
-            type={'button'}
-            theme={'primary'}
-            onClick={() =>
-              API.incidents(requestOptions).generateReport(`${id}`)
-            }
-          />
+          {/*<Button*/}
+          {/*  text={'Generate report'}*/}
+          {/*  type={'button'}*/}
+          {/*  theme={'primary'}*/}
+          {/*  onClick={() =>*/}
+          {/*    API.incidents(requestOptions).generateReport(`${id}`)*/}
+          {/*  }*/}
+          {/*/>*/}
         </div>
       </div>
       <div className='p-8 border border-main-dark rounded bg-main-lightest'>

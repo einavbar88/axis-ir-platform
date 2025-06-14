@@ -152,6 +152,9 @@ export const Home: React.FC = () => {
 
   return selectedAccount ? (
     <div className='w-full h-full flex flex-col'>
+      <h2 className='w-full font-bold text-2xl mb-4 text-main-darkest flex justify-center'>
+        {selectedAccount.label}
+      </h2>
       <div className='flex justify-center mb-4'>
         <h4>Welcome back, {user?.username}</h4>
       </div>

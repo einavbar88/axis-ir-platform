@@ -16,7 +16,7 @@ export const TopBar = () => {
           <img src={routes.assets.logo} alt={'AxisIR'} />
         </Link>
       </div>
-      <div className={'flex align-middle justify-between w-full'}>
+      <div className={'flex align-middle justify-between w-full relative'}>
         <div />
         <SelectAccount />
         <div className='flex items-center pr-2'>
